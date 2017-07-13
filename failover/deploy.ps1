@@ -1,6 +1,6 @@
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
-    [string] $ResourceGroupLocation = "North Europe",
+    [string] $ResourceGroupLocation = "East US",
     [string] $TemplateFile = ".\azuredeploy.json",
     [string] [Parameter(Mandatory=$true)] $KeyVaultName,
     [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName

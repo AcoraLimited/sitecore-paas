@@ -28,7 +28,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/failover/azuredeploy-nested-msdeploy.json"
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/failover/nested/azuredeploy-nested-msdeploy.json"
         },
         "parameters": {
           "cmMsdeployPackageurl": {
