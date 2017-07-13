@@ -10,7 +10,7 @@
     },
     "sitecoreSku": {
       "type": "string",
-      "defaultValue": "xM1",
+      "defaultValue": "xM3",
       "allowedValues": [
         "custom",
         "xM1",
@@ -40,7 +40,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production-slot/nested/azuredeploy-nested-services.json"
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/staging/nested/azuredeploy-nested-services.json"
         },
         "parameters": {
           "sitecoreSku": {

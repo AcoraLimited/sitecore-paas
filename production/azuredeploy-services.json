@@ -10,7 +10,7 @@
     },
     "sitecoreSku": {
       "type": "string",
-      "defaultValue": "xM1",
+      "defaultValue": "xM3",
       "allowedValues": [
         "custom",
         "xM1",
