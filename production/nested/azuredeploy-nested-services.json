@@ -163,7 +163,7 @@
           "skuCapacity": 3
         },
         "coreSqlDatabase": {
-          "ddition": "Standard",
+          "edition": "Standard",
           "maxSize": "268435456000",
           "serviceObjectiveLevel": "S1"
         },
