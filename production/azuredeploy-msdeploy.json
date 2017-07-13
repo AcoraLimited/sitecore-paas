@@ -1,0 +1,81 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "keyVaultResourceGroupName": {
+      "type": "string"
+    },
+    "licenseXml": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+    "cmMsdeployPackageurlSecretName": "SitecoreXmCmMsDeployPackageUrl",
+    "cdMsdeployPackageurlSecretName": "SitecoreXmCdMsDeployPackageUrl",
+    "sqlserverLoginSecretName": "SqlServerLogin",
+    "sqlserverPasswordSecretName": "SqlServerPassword",
+    "sitecoreAdminPasswordSecretName": "SitecoreAdminPassword"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-msdeploy",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy.json"
+        },
+        "parameters": {
+          "cmMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cmMsdeployPackageurlSecretName')]"
+            }
+          },
+          "cdMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cdMsdeployPackageurlSecretName')]"
+            }
+          },
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          },
+          "licenseXml": {
+            "value": "[parameters('licenseXml')]"
+          },
+          "sitecoreAdminPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sitecoreAdminPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
