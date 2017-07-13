@@ -31,7 +31,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/mathieu-benoit/Sitecore-Azure-Quickstart-Templates/master/Sitecore%208.2.1/my-xm-slot/azuredeploy-nested-msdeploy.json"
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production-slot/nested/azuredeploy-nested-msdeploy.json"
         },
         "parameters": {
           "slotName": {
