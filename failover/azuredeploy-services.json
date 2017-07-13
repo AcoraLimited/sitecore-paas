@@ -1,0 +1,66 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "keyVaultResourceGroupName": {
+      "type": "string"
+    },
+    "sitecoreSku": {
+      "type": "string",
+      "defaultValue": "xM1",
+      "allowedValues": [
+        "custom",
+        "xM1",
+        "xM2",
+        "xM3",
+        "xM4",
+        "xM5"
+      ],
+      "metadata": {
+        "description": "Sitecore SKU controls the sizes and service levels of the provisioned resources"
+      }
+    }
+  },
+  "variables": {
+    "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+    "sqlserverLoginSecretName": "SqlServerLogin",
+    "sqlserverPasswordSecretName": "SqlServerPassword"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-services",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/failover/nested/azuredeploy-nested-services.json"
+        },
+        "parameters": {
+          "sitecoreSku": {
+            "value": "[parameters('sitecoreSku')]"
+          },
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

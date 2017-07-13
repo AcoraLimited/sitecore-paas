@@ -1,7 +1,6 @@
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
-    [string] $ResourceGroupLocation = "West Europe",
-    [string] [Parameter(Mandatory=$true)] $SlotName,
+    [string] $ResourceGroupLocation = "North Europe",
     [string] $TemplateFile = ".\azuredeploy.json",
     [string] [Parameter(Mandatory=$true)] $KeyVaultName,
     [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName
@@ -17,8 +16,9 @@ Function Unzip
     return $output.ToArray();
 }
 
-#Login-AzureRmAccount
-#Select-AzureRmSubscription -SubscriptionName "TODO"
+#Login-AzureRmAccount;
+#Select-AzureRmSubscription -SubscriptionName "TODO";
+#New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocation;
 
 ## Obtain additional template parameters from Azure Keyvault
 $secretLicense = Get-AzureKeyVaultSecret -VaultName $KeyVaultName -Name "SitecoreLicense";
@@ -27,7 +27,6 @@ $licenseFile = Unzip($zipContent);
 $licenseFileContent = [System.Text.Encoding]::UTF8.GetString($licenseFile);
 
 $parameters = New-Object -TypeName Hashtable;
-$parameters.Add("slotName", $SlotName);
 $parameters.Add("licenseXml", $licenseFileContent);
 $parameters.Add("keyVaultName", $KeyVaultName);
 $parameters.Add("keyVaultResourceGroupName", $KeyVaultResourceGroupName);
@@ -35,5 +34,4 @@ $parameters.Add("keyVaultResourceGroupName", $KeyVaultResourceGroupName);
 ## Start the nested ARM template deployment
 ## azuredeploy.json => azuredeploy-services.json => azuredeploy.msdeploy.json
 New-AzureRmResourceGroupDeployment -Name $ResourceGroupName -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFile -TemplateParameterObject $parameters;
-
                                     
