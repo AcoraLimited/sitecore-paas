@@ -3,7 +3,9 @@ Param(
     [string] $ResourceGroupLocation = "West Europe",
     [string] $TemplateFile = ".\azuredeploy.json",
     [string] [Parameter(Mandatory=$true)] $KeyVaultName,
-    [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName
+    [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName,
+    [switch] $Delay,
+    [int] $DelaySeconds = 60
 )
 
 Function Unzip
@@ -30,6 +32,11 @@ $parameters = New-Object -TypeName Hashtable;
 $parameters.Add("licenseXml", $licenseFileContent);
 $parameters.Add("keyVaultName", $KeyVaultName);
 $parameters.Add("keyVaultResourceGroupName", $KeyVaultResourceGroupName);
+
+## Optionally delay the ARM provisioning to allow previous actions to spin up
+if ($Delay) {
+    Start-Sleep -Seconds $DelaySeconds;
+}
 
 ## Start the nested ARM template deployment
 ## azuredeploy.json => azuredeploy-services.json => azuredeploy.msdeploy.json
