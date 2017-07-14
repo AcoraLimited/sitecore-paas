@@ -881,7 +881,7 @@
       "type": "string"
     },
     "cdWebAppRef": {
-      "value": "[reference(resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy')))]",
+      "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
       "type": "string"
     }
   }

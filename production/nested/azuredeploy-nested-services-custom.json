@@ -44,7 +44,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
+                  "metricResourceUri": "[parameters('cdWebAppRef')]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -64,7 +64,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
+                  "metricResourceUri": "[parameters('cdWebAppRef')]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -136,7 +136,7 @@
         ],
         "enabled": true,
         "name": "[parameters('cdHostingplanAutoscaleName')]",
-        "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
+        "targetResourceUri": "[parameters('cdWebAppRef')]",
         "targetResourceLocation": "[parameters('location')]",
         "notifications": []
       }
