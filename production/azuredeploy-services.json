@@ -66,10 +66,7 @@
       "name": "azuredeploy-nested-services-custom",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
-      "properties": {
-        "dependsOn": [
-          "[resourceId('Microsoft.Resources/deployments','azuredeploy-nested-services')]"
-        ],
+      "properties": {        
         "mode": "Incremental",
         "parameters": {
           "cdWebAppRef": {
