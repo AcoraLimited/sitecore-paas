@@ -882,7 +882,7 @@
     },
     "cdWebAppRef": {
       "value": "[reference(resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy')))]",
-      "type": "object"
+      "type": "string"
     }
   }
 }

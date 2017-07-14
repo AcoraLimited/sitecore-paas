@@ -12,12 +12,12 @@
     },
     "cdHostingplanAutoscaleName": {
       "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-cm-scale')]"
+      "defaultValue": "[toLower(trim(concat(parameters('deploymentId'), '-cm-scale')))]"      
     },
     "cdWebAppRef": {
-      "type": "object",
+      "type": "string",
       "metadata": {        
-          "description": "The Sitecore CD web app configuration."
+          "description": "The Sitecore CD web hosting plan."
         }
       }    
   },
@@ -44,7 +44,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdWebAppRef').value.Id]",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -64,7 +64,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdWebAppRef').value.Id]",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -136,7 +136,7 @@
         ],
         "enabled": true,
         "name": "[parameters('cdHostingplanAutoscaleName')]",
-        "targetResourceUri": "[parameters('cdWebAppRef').value.Id]",
+        "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('cdWebAppRef'))]",
         "targetResourceLocation": "[parameters('location')]",
         "notifications": []
       }
