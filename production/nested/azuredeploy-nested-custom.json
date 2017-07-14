@@ -1,0 +1,148 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentId": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "cdHostingplanAutoscaleName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-cm-scale')]"
+    },
+    "cdWebAppRef": {
+      "type": "object",
+      "metadata": {        
+          "description": "The Sitecore CD web app configuration."
+        }
+      }    
+  },
+  "variables": {},
+  "resources": [
+    {      
+      "type": "Microsoft.Insights/autoscaleSettings",
+      "name": "[parameters('cdHostingplanAutoscaleName')]",
+      "apiVersion": "2014-04-01",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "profiles": [
+          {
+            "name": "Scale CD Service by CPU Metric",
+            "capacity": {
+              "minimum": "1",
+              "maximum": "3",
+              "default": "1"
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricNamespace": "",
+                  "metricResourceUri": "[parameters('cdWebAppRef').Id]",
+                  "metricResourceLocation": "[parameters('location')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 70
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT5M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricNamespace": "",
+                  "metricResourceUri": "/subscriptions/3f000fbd-35ee-4ab6-b9b1-278e6dd0a15a/resourceGroups/FFC-Sitecore/providers/Microsoft.Web/serverFarms/ffc-sitecore-cd-hp",
+                  "metricResourceLocation": "[parameters('location')]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 50
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": "1",
+                  "cooldown": "PT5M"
+                }
+              }
+            ],
+            "recurrence": {
+              "frequency": "Week",
+              "schedule": {
+                "timeZone": "UTC",
+                "days": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "hours": [
+                  0
+                ],
+                "minutes": [
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "{\"name\":\"Default\",\"for\":\"Scale CD Service by CPU Metric\"}",
+            "capacity": {
+              "minimum": "1",
+              "maximum": "1",
+              "default": "1"
+            },
+            "rules": [],
+            "recurrence": {
+              "frequency": "Week",
+              "schedule": {
+                "timeZone": "UTC",
+                "days": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "hours": [
+                  23
+                ],
+                "minutes": [
+                  59
+                ]
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "name": "[parameters('cdHostingplanAutoscaleName')]",
+        "targetResourceUri": "/subscriptions/3f000fbd-35ee-4ab6-b9b1-278e6dd0a15a/resourceGroups/FFC-Sitecore/providers/Microsoft.Web/serverfarms/ffc-sitecore-cd-hp",
+        "targetResourceLocation": "[parameters('location')]",
+        "notifications": []
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ffc_sitecore_cd_hp_name'))]"
+      ]
+    }
+  ]
+}

@@ -879,6 +879,10 @@
     "applicationInsightsInstrumentationKey": {
       "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
       "type": "string"
+    },
+    "cdWebAppRef": {
+      "value": "[reference(resourceId('Microsoft.Web/sites', variables('cdWebAppNameTidy')))]",
+      "type": "object"
     }
   }
 }
