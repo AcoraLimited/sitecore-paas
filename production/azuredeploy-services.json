@@ -27,7 +27,7 @@
   "variables": {
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "sqlserverLoginSecretName": "SqlServerLogin",
-    "sqlserverPasswordSecretName": "SqlServerPassword",
+    "sqlserverPasswordSecretName": "SqlServerPassword"
   },
   "resources": [
     {
