@@ -44,7 +44,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdWebAppRef').value.Id]",
+                  "metricResourceUri": "[parameters('cdWebAppRef').value]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -64,7 +64,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdWebAppRef').value.Id]",
+                  "metricResourceUri": "[parameters('cdWebAppRef').value]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -136,7 +136,7 @@
         ],
         "enabled": true,
         "name": "[parameters('cdHostingplanAutoscaleName')]",
-        "targetResourceUri": "[parameters('cdWebAppRef').value.Id]",
+        "targetResourceUri": "[parameters('cdWebAppRef').value]",
         "targetResourceLocation": "[parameters('location')]",
         "notifications": []
       }
