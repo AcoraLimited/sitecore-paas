@@ -23,7 +23,7 @@
   },
   "variables": {},
   "resources": [
-    {      
+    {
       "type": "Microsoft.Insights/autoscaleSettings",
       "name": "[parameters('cdHostingplanAutoscaleName')]",
       "apiVersion": "2014-04-01",
@@ -64,7 +64,7 @@
                 "metricTrigger": {
                   "metricName": "CpuPercentage",
                   "metricNamespace": "",
-                  "metricResourceUri": "/subscriptions/3f000fbd-35ee-4ab6-b9b1-278e6dd0a15a/resourceGroups/FFC-Sitecore/providers/Microsoft.Web/serverFarms/ffc-sitecore-cd-hp",
+                  "metricResourceUri": "[parameters('cdWebAppRef').Id]",
                   "metricResourceLocation": "[parameters('location')]",
                   "timeGrain": "PT1M",
                   "statistic": "Average",
@@ -136,13 +136,10 @@
         ],
         "enabled": true,
         "name": "[parameters('cdHostingplanAutoscaleName')]",
-        "targetResourceUri": "/subscriptions/3f000fbd-35ee-4ab6-b9b1-278e6dd0a15a/resourceGroups/FFC-Sitecore/providers/Microsoft.Web/serverfarms/ffc-sitecore-cd-hp",
+        "targetResourceUri": "[parameters('cdWebAppRef').Id]",
         "targetResourceLocation": "[parameters('location')]",
         "notifications": []
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ffc_sitecore_cd_hp_name'))]"
-      ]
+      }
     }
   ]
 }
