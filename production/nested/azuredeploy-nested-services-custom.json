@@ -15,10 +15,7 @@
       "defaultValue": "[toLower(trim(concat(parameters('deploymentId'), '-cm-scale')))]"      
     },
     "cdWebAppRef": {
-      "type": "string",
-      "metadata": {        
-          "description": "The Sitecore CD web hosting plan."
-        }
+      "type": "string"
       }    
   },
   "variables": {},

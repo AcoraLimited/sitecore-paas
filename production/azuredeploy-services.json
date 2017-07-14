@@ -70,7 +70,7 @@
         "mode": "Incremental",
         "parameters": {
           "cdWebAppRef": {
-            "value": "[reference('azuredeploy-nested-services').outputs.cdWebAppRef]"
+            "value": "[reference('azuredeploy-nested-services').outputs.cdWebAppRef.value]"
           }
         },
         "templateLink": {
