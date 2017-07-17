@@ -1,0 +1,62 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "netApiVersion": "2016-06-01"
+        },
+    "parameters": {
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "[concat(resourceGroup.name(), '-vnet'"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "172.16.0.0/16"
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": "web"
+        },
+        "subnetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "172.16.10.0/24"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('netApiVersion')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vnetName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+     "outputs": {
+        "vnetId": {
+            "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "String",
+            "value": "[parameters('adminUsername')]"
+        }
+    }
+}

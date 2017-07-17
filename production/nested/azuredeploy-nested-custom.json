@@ -1,62 +1,135 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
+    "variables": {
+        "netApiVersion": "2016-12-01",
+        "vmApiVersion": "2016-04-30-preview",
+        "vnetId": "[resourceId('FFC-Web','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"    
+    },
     "parameters": {
+        "deploymentId": {
+            "type": "string",
+            "defaultValue": "[concat(resourceGroup().name, '-iaas-deploy')]"
+        },        
         "location": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
         },
         "virtualMachineName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "FFCAZRAPP001"
         },
         "virtualMachineSize": {
-            "type": "string"
-        },
-        "adminUsername": {
-            "type": "string"
-        },
+            "type": "string",
+            "defaultValue": "Standard_A2_v2"
+        },            
+        "iaasServerLogin": {
+            "type": "string",
+            "minLength": 1
+        },       
+        "iaasServerPassword": {
+            "type": "securestring",
+            "minLength": 1
+        },  
         "virtualNetworkName": {
-            "type": "string"
+            "type": "String"
         },
         "networkInterfaceName": {
-            "type": "string"
+            "type": "String"
         },
         "networkSecurityGroupName": {
-            "type": "string"
+            "type": "String"
         },
         "adminPassword": {
-            "type": "securestring"
+            "type": "SecureString"
         },
         "availabilitySetName": {
-            "type": "string"
+            "type": "String"
+        },
+        "availabilitySetPlatformFaultDomainCount": {
+            "type": "String"
+        },
+        "availabilitySetPlatformUpdateDomainCount": {
+            "type": "String"
+        },
+        "addressPrefix": {
+            "type": "String"
         },
         "subnetName": {
-            "type": "string"
+            "type": "String"
+        },
+        "subnetPrefix": {
+            "type": "String"
         },
         "publicIpAddressName": {
-            "type": "string"
+            "type": "String"
         },
         "publicIpAddressType": {
-            "type": "string"
+            "type": "String"
+        },
+        "vaultName": {
+            "type": "String"
+        },
+        "vaultRG": {
+            "type": "String"
+        },
+        "vaultSubID": {
+            "type": "String"
+        },
+        "policyName": {
+            "type": "String"
+        },
+        "fabricName": {
+            "type": "String"
+        },
+        "protectionContainers": {
+            "type": "Array"
+        },
+        "protectedItems": {
+            "type": "Array"
+        },
+        "sourceResourceIds": {
+            "type": "Array"
         }
-    },
-    "variables": {
-        "vnetId": "[resourceId('FFC-Web','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
-    },
+    },    
     "resources": [
         {
-            "name": "[parameters('virtualMachineName')]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2016-04-30-preview",
+            "name": "[parameters('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2016-09-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
             ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIpAddressVersion": "IPv4",
+                            "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
+                            "subnet": {
+                                "id": "[parameters('subnetId')]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('FFC-Sitecore-Shared', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                }
+            }
+        },      
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachineName')]",
+            "apiVersion": "[variables('vmApiVersion')]",
+            "location": "[parameters('location')]",
             "properties": {
                 "osProfile": {
                     "computerName": "[parameters('virtualMachineName')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
+                    "adminUsername": "[parameters('iaasServerLogin')]",
+                    "adminPassword": "[parameters('iaasServerPassword')]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
@@ -68,13 +141,13 @@
                     "imageReference": {
                         "publisher": "MicrosoftWindowsServer",
                         "offer": "WindowsServer",
-                        "sku": "2016-Datacenter",
+                        "sku": "2016-Datacenter-smalldisk",
                         "version": "latest"
                     },
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "Standard_LRS"
                         }
                     },
                     "dataDisks": []
@@ -89,17 +162,49 @@
                 "availabilitySet": {
                     "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
                 }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
+                "[concat('Microsoft.Compute/availabilitySets/', parameters('availabilitySetName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[parameters('availabilitySetName')]",
+            "apiVersion": "[variables('vmApiVersion')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "platformFaultDomainCount": "[parameters('availabilitySetPlatformFaultDomainCount')]",
+                "platformUpdateDomainCount": "[parameters('availabilitySetPlatformUpdateDomainCount')]",
+                "managed": true
             }
         },
         {
-            "name": "[parameters('networkInterfaceName')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2016-09-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworkName')]",
+            "apiVersion": "[variables('netApiVersion')]",
             "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
-            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaceName')]",
+            "apiVersion": "[variables('netApiVersion')]",
+            "location": "[parameters('location')]",
             "properties": {
                 "ipConfigurations": [
                     {
@@ -118,24 +223,55 @@
                 "networkSecurityGroup": {
                     "id": "[resourceId('FFC-Web', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
                 }
-            }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
+            ]
         },
         {
-            "name": "[parameters('publicIpAddressName')]",
             "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "2016-09-01",
+            "name": "[parameters('publicIpAddressName')]",
+            "apiVersion": "[variables('netApiVersion')]",
             "location": "[parameters('location')]",
             "properties": {
                 "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
             }
         },
         {
-            "name": "[parameters('networkSecurityGroupName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2016-09-01",
+            "name": "[parameters('networkSecurityGroupName')]",
+            "apiVersion": "[variables('netApiVersion')]",
             "location": "[parameters('location')]",
             "properties": {
                 "securityRules": [
+                    {
+                        "name": "FTP",
+                        "properties": {
+                            "priority": 110,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "21",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
+                    {
+                        "name": "SSH",
+                        "properties": {
+                            "priority": 120,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "TCP",
+                            "destinationPortRange": "22",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    },
                     {
                         "name": "default-allow-rdp",
                         "properties": {
@@ -155,7 +291,7 @@
     ],
     "outputs": {
         "adminUsername": {
-            "type": "string",
+            "type": "String",
             "value": "[parameters('adminUsername')]"
         }
     }

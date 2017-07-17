@@ -39,6 +39,8 @@ $secretSitecoreXmCmMsDeployPackageUrl = ConvertTo-SecureString $SitecoreXmCmMsDe
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreLicense' -SecretValue $secretLicense;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SqlServerLogin' -SecretValue $secretSqlServerLogin;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SqlServerPassword' -SecretValue $SqlServerPassword;
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'IaasServerLogin' -SecretValue $secretSqlServerLogin;
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'IaasServerPassword' -SecretValue $SqlServerPassword;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreAdminPassword' -SecretValue $SitecoreAdminPassword;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCdMsDeployPackageUrl' -SecretValue $secretSitecoreXmCdMsDeployPackageUrl;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCmMsDeployPackageUrl' -SecretValue $secretSitecoreXmCmMsDeployPackageUrl;
