@@ -1,0 +1,48 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "keyVaultResourceGroupName": {
+      "type": "string"
+    }    
+  },
+  "variables": {
+    "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+    "iaasLoginSecretName": "IaasServerLogin",
+    "iaasPasswordSecretName": "IaaSServerPassword"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-custom",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-custom.json"
+        },
+        "parameters": {          
+          "iaasServerLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('iaasLoginSecretName')]"
+            }
+          },
+          "iaasServerPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('iaasPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
