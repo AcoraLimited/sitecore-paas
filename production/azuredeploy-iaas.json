@@ -12,7 +12,7 @@
   "variables": {
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "iaasLoginSecretName": "IaasServerLogin",
-    "iaasPasswordSecretName": "IaaSServerPassword"
+    "iaasPasswordSecretName": "IaasServerPassword"
   },
   "resources": [
     {
