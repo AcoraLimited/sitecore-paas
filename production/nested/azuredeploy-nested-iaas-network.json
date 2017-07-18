@@ -13,7 +13,7 @@
         },
         "vnetName": {
             "type": "string",
-            "defaultValue": "[concat(resourceGroup.name(), '-vnet'"
+            "defaultValue": "[concat(resourceGroup.name(), '-vnet')]"
         },
         "location": {
             "type": "string",
