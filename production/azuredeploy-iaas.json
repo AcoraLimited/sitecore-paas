@@ -65,8 +65,8 @@
     }
   ],
   "outputs": {            
-          "cdWebAppRef": {
-            "value": "[reference('azuredeploy-nested-iaas-network').outputs.vnetObject]",
+          "vnetData": {
+            "value": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs]",
             "type": "object"
           }
         }  
