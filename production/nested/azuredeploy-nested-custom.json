@@ -16,11 +16,11 @@
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
         },
-        "virtualMachineName": {
+        "appVmName": {
             "type": "string",
             "defaultValue": "FFCAZRAPP001"
         },
-        "virtualMachineSize": {
+        "appVmSize": {
             "type": "string",
             "defaultValue": "Standard_A2_v2"
         },            
@@ -95,20 +95,20 @@
     },    
     "resources": [
         {
-            "name": "[parameters('networkInterfaceName')]",
+            "name": "[concat(parameters('appVmName'), '-nic')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2016-09-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', concat(parameters('appVmName'), '-nsg'))]"
             ],
             "properties": {
                 "ipConfigurations": [
                     {
-                        "name": "ipconfig1",
+                        "name": "[concat(parameters('appVmName'), '-nic-config-1')]",
                         "properties": {
                             "privateIpAddressVersion": "IPv4",
-                            "privateIPAllocationMethod": "[parameters('privateIPAllocationMethod')]",
+                            "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
                                 "id": "[parameters('subnetId')]"
                             }
@@ -116,7 +116,7 @@
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('FFC-Sitecore-Shared', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                    "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', concat(parameters('appVmName'), '-nsg'))]"
                 }
             }
         },      

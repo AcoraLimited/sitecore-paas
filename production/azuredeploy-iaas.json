@@ -17,12 +17,12 @@
   "resources": [
     {
       "apiVersion": "2015-01-01",
-      "name": "azuredeploy-nested-custom",
+      "name": "azuredeploy-nested-iaas-network",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-custom.json"
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-iaas-network.json"
         },
         "parameters": {          
           "iaasServerLogin": {
@@ -44,5 +44,11 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {            
+          "cdWebAppRef": {
+            "value": "[reference('azuredeploy-nested-iaas-network').outputs.vnetObject]",
+            "type": "object"
+          }
+        }  
 }

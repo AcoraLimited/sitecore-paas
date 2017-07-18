@@ -50,13 +50,9 @@
         }
     ],
      "outputs": {
-        "vnetId": {
-            "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-            "type": "string"
-        },
-        "adminUsername": {
-            "type": "String",
-            "value": "[parameters('adminUsername')]"
+        "vnetObject": {
+            "value":  "[reference(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')))]",
+            "type": "object"
         }
     }
 }
