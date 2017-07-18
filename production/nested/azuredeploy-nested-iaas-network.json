@@ -5,6 +5,12 @@
         "netApiVersion": "2016-06-01"
         },
     "parameters": {
+        "iaasServerLogin": {
+            "type": "string"
+        },
+        "iaasServerPassword": {
+            "type": "securestring"
+        },
         "vnetName": {
             "type": "string",
             "defaultValue": "[concat(resourceGroup.name(), '-vnet'"
