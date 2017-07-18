@@ -12,7 +12,23 @@
   "variables": {
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "iaasLoginSecretName": "IaasServerLogin",
-    "iaasPasswordSecretName": "IaasServerPassword"
+    "iaasPasswordSecretName": "IaasServerPassword",
+    "vNetSettings": { 
+            "Name": "[concat(resourceGroup().name, '-vnet')]",
+            "addressPrefix": "10.0.0.0/16",
+            "subnetFrontEnd" : {
+                "Name": "FrontEnd",
+                "CIDR": "10.0.1.0/24"
+            },
+            "subnetBackEnd" : {
+                "Name": "BackEnd",
+                "CIDR": "10.0.2.0/24"
+            },
+            "subnetManagement" : {
+                "Name": "Management",
+                "CIDR": "10.0.3.0/24"
+            }
+        }
   },
   "resources": [
     {

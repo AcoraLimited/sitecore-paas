@@ -2,7 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "variables": {
-        "netApiVersion": "2016-06-01"
+        "vnetResourceAPI": "2016-09-01",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vNetSettings')['Name'])]",
+        "subnetFrontEndRef": "[concat(variables('vnetID'),'/subnets/', parameters('vNetSettings')['subnetFrontEnd']['Name'])]"
         },
     "parameters": {
         "iaasServerLogin": {
@@ -11,54 +13,120 @@
         "iaasServerPassword": {
             "type": "securestring"
         },
-        "vnetName": {
-            "type": "string",
-            "defaultValue": "[toLower(trim(concat(resourceGroup().name, '-vnet')))]"
+        "vNetSettings": {
+            "type": "object",
+            "metadata": {
+                "description": "Description of the VNet, used by NSG rules."
+            }
         },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
-        },
-        "addressPrefix": {
-            "type": "string",
-            "defaultValue": "172.16.0.0/16"
-        },
-        "subnetName": {
-            "type": "string",
-            "defaultValue": "subnet-web"
-        },
-        "subnetAddressPrefix": {
-            "type": "string",
-            "defaultValue": "172.16.10.0/24"
         }
     },
     "resources": [
+
+        /* NSG */
         {
-            "apiVersion": "[variables('netApiVersion')]",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('vnetName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('addressPrefix')]"
-                    ]
-                },
-                "subnets": [
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat('nsg-', parameters('vNetSettings')['subnetFrontEnd']['Name'])]",
+            "apiVersion": "[variables('vnetResourceAPI')]",
+            "location": "[resourceGroup().location]",
+            "properties" : {
+                "securityRules": [
+
+                    /* allow FTP application port */ 
                     {
-                        "name": "[parameters('subnetName')]",
+                        "name": "allowExternalFTP",
                         "properties": {
-                            "addressPrefix": "[parameters('subnetAddressPrefix')]"
+                        "protocol": "*",
+                        "sourcePortRange": "*",
+                        "destinationPortRange": "21",
+                        "sourceAddressPrefix": "*",
+                        "destinationAddressPrefix": "*",
+                        "access": "Allow",
+                        "priority": 2000,
+                        "direction": "Inbound"
+                        }
+                    },
+
+                    /* allow RDP from external network */
+                    {
+                        "name": "allowExternalRDP",
+                        "properties": {
+                        "protocol": "*",
+                        "sourcePortRange": "*",
+                        "destinationPortRange": "3389",
+                        "sourceAddressPrefix": "*",
+                        "destinationAddressPrefix": "*",
+                        "access": "Allow",
+                        "priority": 3950,
+                        "direction": "Inbound"
+                        }
+                    },
+
+                    /* block all other traffic */ 
+                    {
+                        "name": "DenyAll",
+                        "properties": {
+                        "protocol": "*",
+                        "sourcePortRange": "*",
+                        "destinationPortRange": "*",
+                        "sourceAddressPrefix": "*",
+                        "destinationAddressPrefix": "*",
+                        "access": "Deny",
+                        "priority": 4000,
+                        "direction": "Inbound"
                         }
                     }
                 ]
+            },
+            "tags": {
+
+            }
+        },
+
+        /* Virtual Network */        
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('vNetSettings')['Name']]",
+            "apiVersion": "[variables('vnetResourceAPI')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [                
+                "[concat('Microsoft.Network/networkSecurityGroups/', concat('nsg', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"                
+            ],
+            "properties": {
+                "addressSpace": {
+                "addressPrefixes": [
+                    "[parameters('vNetSettings')['addressPrefix']]"
+                ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('vNetSettings')['subnetFrontEnd']['Name']]",
+                        "properties": {
+                            "addressPrefix": "[parameters('vNetSettings')['subnetFrontEnd']['CIDR']]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"
+                            }
+                        }
+                    }                   
+                ]
+            },
+            "tags": {
             }
         }
+
     ],
-     "outputs": {
-        "vnetObject": {
-            "value":  "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName')))]",
-            "type": "object"
+
+    "outputs": {
+         "subnetIDs" : {
+            "type" : "object",
+            "value": {
+                "frontEnd" : "[variables('subnetFrontEndRef')]",
+                "vNetID" : "[variables('vnetID')]"              
+            }            
         }
     }
+
 }
