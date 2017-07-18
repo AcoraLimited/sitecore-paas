@@ -19,7 +19,7 @@
         },
         "subnetName": {
             "type": "string",
-            "defaultValue": "web"
+            "defaultValue": "subnet-web"
         },
         "subnetAddressPrefix": {
             "type": "string",
