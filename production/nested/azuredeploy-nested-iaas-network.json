@@ -57,7 +57,7 @@
     ],
      "outputs": {
         "vnetObject": {
-            "value":  "[reference(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')))]",
+            "value":  "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName')))]",
             "type": "object"
         }
     }
