@@ -14,7 +14,7 @@
     "iaasLoginSecretName": "IaasServerLogin",
     "iaasPasswordSecretName": "IaasServerPassword",
     "vNetSettings": { 
-            "Name": "[concat(resourceGroup().name, '-vnet')]",
+            "Name": "[toLower(trim(concat(resourceGroup().name, '-vnet')))]",
             "addressPrefix": "10.0.0.0/16",
             "subnetFrontEnd" : {
                 "Name": "FrontEnd",
