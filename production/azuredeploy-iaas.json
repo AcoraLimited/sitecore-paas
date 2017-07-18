@@ -57,7 +57,7 @@
               "secretName": "[variables('iaasPasswordSecretName')]"
             }
           },
-          "vNetSetings": {
+          "vNetSettings": {
             "value": "[variables('vNetSettings')]"
           }
         }
