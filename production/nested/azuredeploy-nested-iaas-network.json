@@ -93,7 +93,7 @@
             "apiVersion": "[variables('vnetResourceAPI')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [                
-                "[concat('Microsoft.Network/networkSecurityGroups/', concat('nsg', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"                
+                "[concat('Microsoft.Network/networkSecurityGroups/', concat('nsg-', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"                
             ],
             "properties": {
                 "addressSpace": {
@@ -107,7 +107,7 @@
                         "properties": {
                             "addressPrefix": "[parameters('vNetSettings')['subnetFrontEnd']['CIDR']]",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat('nsg-', parameters('vNetSettings')['subnetFrontEnd']['Name']))]"
                             }
                         }
                     }                   
