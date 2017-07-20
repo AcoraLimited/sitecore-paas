@@ -75,6 +75,25 @@
           }
         }
       }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-iaas",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/azuredeploy-iaas.json"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "keyVaultResourceGroupName": {
+            "value": "[parameters('keyVaultResourceGroupName')]"
+          }          
+        }
+      }
     }
   ]
 }
