@@ -87,10 +87,10 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-iaas-vm.json"
         },
         "parameters": {          
-          "vmName": { "value": "[parameters('appVMSettings'['Name'])]" },
-          "vmNamesuffix": { "value": "[parameters('appVMSettings'['NameSuffix'])]" },
-          "windowsOSVersion": { "value": "[parameters('appVMSettings'['WindowsOSVersion'])]" },
-          "vmSize": { "value": "[parameters('appVMSettings'['VmSize'])]" },                            
+          "vmName": { "value": "[parameters('appVMSettings')['Name']]" },
+          "vmNamesuffix": { "value": "[parameters('appVMSettings')['NameSuffix']]" },
+          "windowsOSVersion": { "value": "[parameters('appVMSettings')['WindowsOSVersion']]" },
+          "vmSize": { "value": "[parameters('appVMSettings')['VmSize']]" },                            
           "adminUser": {
             "reference": {
               "keyVault": {
