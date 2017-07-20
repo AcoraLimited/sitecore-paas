@@ -33,7 +33,7 @@
         },
     "appVmSettings": {
           "Name": "ffcazrapp001",
-          "NameSufix": "",
+          "NameSuffix": "",
           "WindowsOSVersion": "2016-Datacenter",
           "VmSize": "Standard_A2_v2"        
         }
