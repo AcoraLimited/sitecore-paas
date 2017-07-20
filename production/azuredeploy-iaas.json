@@ -112,7 +112,7 @@
                 "privateIPAllocationMethod": "Dynamic",
                 "privateIPAddress": "",
                 "subnet": {
-                    "id": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs.frontEnd.value]"
+                    "id": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs.value.frontEnd]"
                 },
                 "publicIPAddress": {
                     "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPName'))]"
