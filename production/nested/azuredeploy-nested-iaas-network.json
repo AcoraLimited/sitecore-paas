@@ -7,21 +7,11 @@
         "subnetFrontEndRef": "[concat(variables('vnetID'),'/subnets/', parameters('vNetSettings')['subnetFrontEnd']['Name'])]"
         },
     "parameters": {
-        "iaasServerLogin": {
-            "type": "string"
-        },
-        "iaasServerPassword": {
-            "type": "securestring"
-        },
         "vNetSettings": {
             "type": "object",
             "metadata": {
                 "description": "Description of the VNet, used by NSG rules."
             }
-        },
-        "location": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().location]"
         }
     },
     "resources": [

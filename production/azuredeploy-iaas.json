@@ -7,9 +7,11 @@
     },
     "keyVaultResourceGroupName": {
       "type": "string"
-    }    
+    }        
   },
+
   "variables": {
+    "NetworkProviderAPI" : "2015-06-15",
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "iaasLoginSecretName": "IaasServerLogin",
     "iaasPasswordSecretName": "IaasServerPassword",
@@ -28,9 +30,32 @@
                 "Name": "Management",
                 "CIDR": "10.0.3.0/24"
             }
+        },
+    "appVmSettings": {
+          "Name": "ffcazrapp001",
+          "NameSufix": "",
+          "WindowsOSVersion": "2016-Datacenter",
+          "VmSize": "Standard_A2_v2"        
         }
-  },
+    },
+
   "resources": [
+
+    /* Create Public IP Address */
+    { 
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[concat(variables('appVmSettings').Name,'-pip')]",
+      "apiVersion": "[variables('NetworkProviderAPI')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+          "publicIPAllocationMethod": "Static",
+          "dnsSettings": {
+              "domainNameLabel": "[concat(variables('appVmSettings').Name,'-pip')]"
+          }
+      }
+    },
+
+    /* Provision Virtual Network */
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-iaas-network",
@@ -41,7 +66,32 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-iaas-network.json"
         },
         "parameters": {          
-          "iaasServerLogin": {
+          "vNetSettings": {
+            "value": "[variables('vNetSettings')]"
+          }
+        }
+      }
+    },
+    
+    /* Create Virtual Machines */
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-iaas-vm",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-iaas-vm.json"
+        },
+        "parameters": {          
+          "vmName": { "value": "[parameters('appVMSettings'['Name'])]" },
+          "vmNamesuffix": { "value": "[parameters('appVMSettings'['NameSuffix'])]" },
+          "windowsOSVersion": { "value": "[parameters('appVMSettings'['WindowsOSVersion'])]" },
+          "vmSize": { "value": "[parameters('appVMSettings'['VmSize'])]" },                            
+          "adminUser": {
             "reference": {
               "keyVault": {
                 "id": "[variables('keyVaultId')]"
@@ -49,7 +99,7 @@
               "secretName": "[variables('iaasLoginSecretName')]"
             }
           },
-          "iaasServerPassword": {
+          "adminPassword": {
             "reference": {
               "keyVault": {
                 "id": "[variables('keyVaultId')]"
@@ -57,17 +107,32 @@
               "secretName": "[variables('iaasPasswordSecretName')]"
             }
           },
-          "vNetSettings": {
-            "value": "[variables('vNetSettings')]"
+          "ipConfig": { 
+            "value": {
+                "privateIPAllocationMethod": "Dynamic",
+                "privateIPAddress": "[parameters('privateIP')]",
+                "subnet": {
+                    "id": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs.frontEnd]"
+                },
+                "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPName'))]"
+                }
+            }
           }
         }
       }
     }
+
   ],
+
   "outputs": {            
           "vnetData": {
             "value": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs]",
             "type": "object"
+          },
+          "appVmFQDN": {
+            "type" : "string",
+            "value": "[reference(concat(variables('appVmSettings').Name,'-pip')).dnsSettings.fqdn]"          
           }
         }  
 }
