@@ -79,7 +79,7 @@
       "name": "azuredeploy-nested-iaas-vm",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPName'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses/', concat(variables('appVmSettings').Name,'-pip'))]"
       ],
       "properties": {
         "mode": "Incremental",
