@@ -115,7 +115,7 @@
                     "id": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs.value.frontEnd]"
                 },
                 "publicIPAddress": {
-                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPName'))]"
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('appVmSettings').Name,'-pip'))]"
                 }
             }
           }
