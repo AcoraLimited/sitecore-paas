@@ -110,7 +110,7 @@
           "ipConfig": { 
             "value": {
                 "privateIPAllocationMethod": "Dynamic",
-                "privateIPAddress": "[parameters('privateIP')]",
+                "privateIPAddress": "",
                 "subnet": {
                     "id": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs.frontEnd]"
                 },
