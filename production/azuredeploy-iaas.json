@@ -73,7 +73,7 @@
       }
     },
     
-    /* Create Virtual Machines */
+    /* Create Applications Virtual Machine */
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-iaas-vm",
