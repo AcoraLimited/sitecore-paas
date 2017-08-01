@@ -15,6 +15,8 @@
     "coreDbNameTidy": "[toLower(trim(parameters('coreSqldatabaseName')))]",
     "webDbNameTidy": "[toLower(trim(parameters('webSqldatabaseName')))]",
     "webDbServerNameTidy": "[toLower(trim(parameters('webSqlserverName')))]",
+    "appDbServerNameTidy": "[toLower(trim(parameters('appSqlserverName')))]",
+    "appDbNameTidy": "[toLower(trim(parameters('appSqldatabaseName')))]",    
     "masterDbNameTidy": "[toLower(trim(parameters('masterSqldatabaseName')))]",
     "searchServiceNameTidy": "[toLower(trim(parameters('searchserviceName')))]",
     "redisCacheNameTidy": "[toLower(trim(parameters('rediscacheName')))]",
@@ -315,6 +317,20 @@
       "minLength": 8,
       "defaultValue": "[parameters('sqlserverPassword')]"
     },
+    "appSqlserverName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-app-sql')]"
+    },
+    "appSqlserverLogin": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[parameters('sqlserverLogin')]"
+    },
+    "appSqlserverPassword": {
+      "type": "securestring",
+      "minLength": 8,
+      "defaultValue": "[parameters('sqlserverPassword')]"
+    },
     "coreSqldatabaseName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-core-db')]"
@@ -326,6 +342,10 @@
     "webSqldatabaseName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-web-db')]"
+    },
+    "appSqldatabaseName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-app-db')]"
     },
     "cmCoreSqldatabaseUsername": {
       "type": "string",
@@ -841,6 +861,50 @@
           }
         }
       ]
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "[variables('dbApiVersion')]",
+      "properties": {
+        "administratorLogin": "[parameters('appSqlserverLogin')]",
+        "administratorLoginPassword": "[parameters('appSqlserverPassword')]",
+        "version": "[parameters('sqlserverVersion')]"
+      },
+      "name": "[variables('appDbServerNameTidy')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[parameters('sitecoreTagProvider')]"
+      },
+      "resources": [
+        {
+          "type": "firewallrules",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          },
+          "name": "AllowAllWindowsAzureIps",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ]
+        },
+        {
+          "type": "databases",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "edition": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.edition]",
+            "collation": "[parameters('sqldatabaseCollation')]",
+            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.maxSize]",
+            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
+          },
+          "name": "[variables('appDbNameTidy')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ],
+          "tags": {
+            "provider": "[parameters('sitecoreTagProvider')]"
+          }
     },
     {
       "type": "Microsoft.Sql/servers",
