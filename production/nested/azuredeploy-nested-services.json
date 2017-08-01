@@ -677,7 +677,7 @@
           }
         }
       ]
-    },
+    },        
     {
       "type": "Microsoft.Web/sites/slots",
       "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'))]",
@@ -739,7 +739,7 @@
           }
         }
       ]
-    },
+    },    
     {
       "type": "Microsoft.Web/sites/slots",
       "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
@@ -801,7 +801,7 @@
           }
         }
       ]
-    },
+    },    
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cdWebAppNameTidy')]",
@@ -863,7 +863,7 @@
           }
         }
       ]
-    },    
+    },
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -907,7 +907,9 @@
           "tags": {
             "provider": "[parameters('sitecoreTagProvider')]"
           }
-    },    
+        }  
+      ]
+    },            
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -1081,8 +1083,9 @@
       "tags": {
         "provider": "[parameters('sitecoreTagProvider')]"
       }
-    }
+    }    
   ],
+  
 
   "outputs": {
     "redisConnectionString": {
@@ -1097,7 +1100,9 @@
       "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
       "type": "string"
     }
-    
   }
+
+}
+
 
   
