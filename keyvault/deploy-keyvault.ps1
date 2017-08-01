@@ -37,6 +37,8 @@ $secretIaasServerLogin = ConvertTo-SecureString $IaasServerLogin -AsPlainText -F
 $secretSqlServerLogin = ConvertTo-SecureString $SqlServerLogin -AsPlainText -Force;
 $secretSitecoreXmCdMsDeployPackageUrl = ConvertTo-SecureString $SitecoreXmCdMsDeployPackageUrl -AsPlainText -Force;
 $secretSitecoreXmCmMsDeployPackageUrl = ConvertTo-SecureString $SitecoreXmCmMsDeployPackageUrl -AsPlainText -Force;
+$secretSitecoreXmCdLiteMsDeployPackageUrl = ConvertTo-SecureString $SitecoreXmCdMsDeployPackageUrl.Replace(".scwdp.zip", "-nodb.scwdp.zip") -AsPlainText -Force;
+$secretSitecoreXmCmLiteMsDeployPackageUrl = ConvertTo-SecureString $SitecoreXmCmMsDeployPackageUrl.Replace(".scwdp.zip", "-nodb.scwdp.zip") -AsPlainText -Force;
 
 #Set Secrets
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreLicense' -SecretValue $secretLicense;
@@ -47,6 +49,8 @@ Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'IaasServerPassword' -Sec
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreAdminPassword' -SecretValue $SitecoreAdminPassword;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCdMsDeployPackageUrl' -SecretValue $secretSitecoreXmCdMsDeployPackageUrl;
 Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCmMsDeployPackageUrl' -SecretValue $secretSitecoreXmCmMsDeployPackageUrl;
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCdLiteMsDeployPackageUrl' -SecretValue $secretSitecoreXmCdLiteMsDeployPackageUrl;
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name 'SitecoreXmCmLiteMsDeployPackageUrl' -SecretValue $secretSitecoreXmCmLiteMsDeployPackageUrl;
 
 #Set VSTS Policies
 IF ($VSTSServicePrincipalNames.Count -ne 0){
