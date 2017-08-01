@@ -628,7 +628,7 @@
             "index.html"
           ],
           "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
-          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
+          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"          
         }
       },
       "location": "[parameters('location')]",
