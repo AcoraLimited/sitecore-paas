@@ -658,7 +658,7 @@
     },
     {
       "type": "Microsoft.Web/sites/slots",
-      "name": "[concat(variables('cdWebAppNameTidy'), '/', parameters('slotName'))]",
+      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
       "apiVersion": "[variables('webApiVersion')]",
       "dependsOn": [                             
             "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]"            
@@ -686,7 +686,7 @@
           "name": "connectionstrings",
           "type": "config",
           "dependsOn": [            
-            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', parameters('slotName'))]",
+            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
