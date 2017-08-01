@@ -1,6 +1,7 @@
 ﻿{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "variables": {
     "webApiVersion": "2015-08-01",
     "dbApiVersion": "2014-04-01-preview",
@@ -1017,7 +1018,8 @@
           "tags": {
             "provider": "[parameters('sitecoreTagProvider')]"
           }
-        },
+        }
+        /*
         {
           "type": "databases",
           "apiVersion": "[variables('dbApiVersion')]",
@@ -1036,6 +1038,7 @@
             "provider": "[parameters('sitecoreTagProvider')]"
           }
         }
+        */
       ]
     },
     {
@@ -1086,7 +1089,6 @@
     }    
   ],
   
-
   "outputs": {
     "redisConnectionString": {
       "value": "[concat(reference(variables('redisCacheNameTidy')).hostName, ':', reference(variables('redisCacheNameTidy')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
@@ -1103,6 +1105,3 @@
   }
 
 }
-
-
-  

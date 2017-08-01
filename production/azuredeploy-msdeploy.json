@@ -2,6 +2,18 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "webSqlserverName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-web-sql')]"
+    },
+    "webSqldatabaseName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-web-db')]"
+    },
+    "targetSqldatabaseName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-web-db-', parameters('slotName'))]"
+    },
     "keyVaultName": {
       "type": "string"
     },
@@ -10,17 +22,29 @@
     },
     "licenseXml": {
       "type": "securestring"
+    },
+    "slotName": {
+      "type": "string",
+      "defaultValue": "staging"
     }
   },
+
   "variables": {
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "cmMsdeployPackageurlSecretName": "SitecoreXmCmMsDeployPackageUrl",
     "cdMsdeployPackageurlSecretName": "SitecoreXmCdMsDeployPackageUrl",
     "sqlserverLoginSecretName": "SqlServerLogin",
     "sqlserverPasswordSecretName": "SqlServerPassword",
-    "sitecoreAdminPasswordSecretName": "SitecoreAdminPassword"
+    "sitecoreAdminPasswordSecretName": "SitecoreAdminPassword",
+    "webDbNameTidy": "[toLower(trim(parameters('webSqldatabaseName')))]",
+    "webDbServerNameTidy": "[toLower(trim(parameters('webSqlserverName')))]",
+    "targetDbNameTidy": "[toLower(trim(parameters('targetSqldatabaseName')))]"
   },
+
   "resources": [
+
+    /* Deploy to Production */
+
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -76,6 +100,21 @@
           }
         }
       }
-    }
+    },
+
+    /* Copy Web Database for Staging */
+    {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy'))]",
+            "properties": {
+                "createMode": "Copy",
+                "souceDatabaseId": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbNameTidy'))]"                
+            }
+    }            
+
+    /* Deploy Code Only to Staging */
+
   ]
 }
