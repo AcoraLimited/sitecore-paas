@@ -52,7 +52,7 @@
   "resources": [
 
     /* Deploy to Production */
-
+    
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -109,7 +109,7 @@
         }
       }
     },
-
+    
     /* Copy Web Database for Staging */
     {
             "type": "Microsoft.Sql/servers/databases",
@@ -118,11 +118,20 @@
             "name": "[concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy'))]",
             "properties": {
                 "createMode": "Copy",
-                "souceDatabaseId": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbNameTidy'))]"                
+                "sourceDatabaseId": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"                
             }
     }            
 
     /* Deploy Code Only to Staging */
 
-  ]
+  ],
+
+    "outputs": {
+         "sourceDatabaseId" : {
+            "type" : "string",
+            "value": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"    
+        }
+    }
+
+
 }
