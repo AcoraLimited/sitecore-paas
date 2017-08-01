@@ -660,6 +660,9 @@
       "type": "Microsoft.Web/sites/slots",
       "name": "[concat(variables('cdWebAppNameTidy'), '/', parameters('slotName'))]",
       "apiVersion": "[variables('webApiVersion')]",
+      "dependsOn": [                             
+            "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]"            
+      ],
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
         "siteConfig": {
