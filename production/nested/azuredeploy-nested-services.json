@@ -658,6 +658,65 @@
     },
     {
       "type": "Microsoft.Web/sites/slots",
+      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'))]",
+      "apiVersion": "[variables('webApiVersion')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cmHostingPlanNameTidy'))]",
+        "siteConfig": {
+          "use32BitWorkerProcess": "[variables('webUse32BitWorkerProcess')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
+          "alwaysOn": "[variables('webAlwaysOn')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
+          "phpVersion": "",
+          "defaultDocuments": [
+            "index.html"
+          ],
+          "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
+          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
+        }
+      },
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[parameters('sitecoreTagProvider')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('webApiVersion')]",
+          "name": "connectionstrings",
+          "type": "config",
+          "dependsOn": [            
+            "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-', parameters('slotName'))]",
+            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
+            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('masterDbNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"
+          ],
+          "properties": {
+            "core": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "master": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "web": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "cloud.search": {
+              "value": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
+              "type": "Custom"
+            },
+            "appinsights.instrumentationkey": {
+              "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
+              "type": "Custom"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/slots",
       "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
       "apiVersion": "[variables('webApiVersion')]",
       "dependsOn": [                             
