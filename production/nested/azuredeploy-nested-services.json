@@ -682,7 +682,7 @@
           "apiVersion": "[variables('webApiVersion')]",
           "name": "connectionstrings",
           "type": "config",
-          "dependsOn": [
+          "dependsOn": [            
             "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', parameters('slotName'))]",
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
