@@ -6,6 +6,10 @@
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
     },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
     "webSqlserverName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-web-sql')]"
