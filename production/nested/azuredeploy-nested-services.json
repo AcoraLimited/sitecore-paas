@@ -775,8 +775,7 @@
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'), '-', parameters('slotName'))]"
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]"            
           ],
           "properties": {
             "core": {
