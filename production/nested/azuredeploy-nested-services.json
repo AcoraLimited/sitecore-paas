@@ -262,6 +262,7 @@
       }
     }
   },
+
   "parameters": {
     "slotName": {
       "type": "string",
@@ -581,6 +582,7 @@
       }
     }
   },
+
   "resources": [
     {
       "type": "Microsoft.Web/serverfarms",
@@ -861,7 +863,7 @@
           }
         }
       ]
-    },
+    },    
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -905,7 +907,7 @@
           "tags": {
             "provider": "[parameters('sitecoreTagProvider')]"
           }
-    },
+    },    
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -1081,6 +1083,7 @@
       }
     }
   ],
+
   "outputs": {
     "redisConnectionString": {
       "value": "[concat(reference(variables('redisCacheNameTidy')).hostName, ':', reference(variables('redisCacheNameTidy')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
@@ -1094,5 +1097,7 @@
       "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
       "type": "string"
     }
+    
   }
-}
+
+  
