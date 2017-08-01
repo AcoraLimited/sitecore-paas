@@ -157,6 +157,14 @@
     "securityClientIpMask": {
       "type": "string",
       "defaultValue": "0.0.0.0"
+    },
+    "infrastructure": {
+      "type": "object",
+      "defaultValue": {
+        "sqlServerFqdn": "[reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName]",
+        "webSqlServerFqdn": "[reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName]",
+        "cdWebAppFqdn": "[reference(concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))).defaultHostName]"
+      }
     }
   },
   "resources": [
@@ -187,7 +195,7 @@
           "Cloud Search Connection String": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
           "Application Insights Instrumentation Key": "[reference(concat('Microsoft.Insights/Components/', variables('appInsightsNameTidy')), variables('appInsightsApiVersion')).InstrumentationKey]",
           "Application Insights Role": "CM",
-          "KeepAlive Url": "[concat('https://', reference(concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy')), variables('webApiVersion')).hostNames[0], '/sitecore/service/keepalive.aspx')]",
+          "Social Link Domain": "[parameters('infrastructure').cdWebAppFqdn]",          
           "License Xml": "[variables('licenseXml')]",
           "IP Security Client IP": "[parameters('securityClientIp')]",
           "IP Security Client IP Mask": "[parameters('securityClientIpMask')]"
@@ -219,8 +227,7 @@
           "Web Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
           "Cloud Search Connection String": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
           "Application Insights Instrumentation Key": "[reference(concat('Microsoft.Insights/Components/', variables('appInsightsNameTidy')), variables('appInsightsApiVersion')).InstrumentationKey]",
-          "Application Insights Role": "CD",
-          "KeepAlive Url": "[concat('https://', reference(concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy')), variables('webApiVersion')).hostNames[0], '/sitecore/service/keepalive.aspx')]",
+          "Application Insights Role": "CD",          
           "Redis Connection String": "[concat(reference(concat('Microsoft.Cache/Redis/', variables('redisCacheNameTidy')), variables('redisApiVersion')).hostName, ':', reference(concat('Microsoft.Cache/Redis/', variables('redisCacheNameTidy')), variables('redisApiVersion')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
           "License Xml": "[variables('licenseXml')]"
         }
