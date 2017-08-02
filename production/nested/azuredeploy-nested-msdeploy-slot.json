@@ -36,11 +36,11 @@
     },
     "cmWebappName": {
       "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-cm')]"
+      "defaultValue": "[concat(parameters('deploymentId'), '-cm-', parameters('slotName'))]"
     },
     "cdWebappName": {
       "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-cd')]"
+      "defaultValue": "[concat(parameters('deploymentId'), '-cd-', parameters('slotName'))]"
     },
     "cmMsdeployPackageurl": {
       "type": "securestring"
@@ -169,7 +169,7 @@
   "resources": [
 
     {
-      "name": "[concat(variables('cmWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
+      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
@@ -201,8 +201,9 @@
           "IP Security Client IP Mask": "[parameters('securityClientIpMask')]"
         }
       }
-    },
+    }
 
+    /*
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/appsettings')]",
       "type": "Microsoft.Web/sites/slots/config",
@@ -259,5 +260,6 @@
       ]
     }
 
+    */
   ]
 }
