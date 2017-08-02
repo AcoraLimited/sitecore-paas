@@ -216,7 +216,7 @@
     },
 
     {
-      "name": "[concat(variables('cdWebAppNameTidy'), '/', parameters('slotName'), '/MSDeploy')]",
+      "name": "[concat(variables('cdWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
