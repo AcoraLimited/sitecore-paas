@@ -41,6 +41,8 @@
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "cmMsdeployPackageurlSecretName": "SitecoreXmCmMsDeployPackageUrl",
     "cdMsdeployPackageurlSecretName": "SitecoreXmCdMsDeployPackageUrl",
+    "cmLiteMsdeployPackageurlSecretName": "SitecoreXmCmLiteMsDeployPackageUrl",
+    "cdLiteMsdeployPackageurlSecretName": "SitecoreXmCdLiteMsDeployPackageUrl",
     "sqlserverLoginSecretName": "SqlServerLogin",
     "sqlserverPasswordSecretName": "SqlServerPassword",
     "sitecoreAdminPasswordSecretName": "SitecoreAdminPassword",
@@ -51,8 +53,10 @@
 
   "resources": [
 
-    /* Deploy to Production */
-    
+    /* Deploy Full Sitecore Application to Production Slot */    
+
+    /*
+
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -110,19 +114,81 @@
       }
     },
     
-    /* Copy Web Database for Staging */
+
+    /* Copy Sitecore Web Database for Staging */
     {
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2014-04-01-preview",
             "location": "[parameters('location')]",
             "name": "[concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy'))]",
+            "dependsOn": [
+              "[resourceId('Microsoft.Resources/deployments', 'azuredeploy-nested-msdeploy')]"
+            ],
             "properties": {
                 "createMode": "Copy",
                 "sourceDatabaseId": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"                
             }
-    }            
+    },            
 
-    /* Deploy Code Only to Staging */
+    /*
+
+    /* Deploy Sitecore Code Only to Staging Slot */
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-msdeploy-slot",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy-slot.json"
+        },
+        "parameters": {
+          "cmMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cmLiteMsdeployPackageurlSecretName')]"
+            }
+          },
+          "cdMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cdLiteMsdeployPackageurlSecretName')]"
+            }
+          },
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          },
+          "licenseXml": {
+            "value": "[parameters('licenseXml')]"
+          },
+          "sitecoreAdminPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sitecoreAdminPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    }
 
   ],
 
