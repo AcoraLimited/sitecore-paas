@@ -1,6 +1,7 @@
 ﻿{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "variables": {
     "webApiVersion": "2015-08-01",
     "dbApiVersion": "2014-04-01-preview",
@@ -19,6 +20,7 @@
     "appInsightsNameTidy": "[toLower(trim(parameters('applicationinsightsName')))]",
     "licenseXml": "[parameters('licenseXml')]"
   },
+
   "parameters": {
     "deploymentId": {
       "type": "string",
@@ -159,6 +161,7 @@
       "defaultValue": "0.0.0.0"
     }
   },
+
   "resources": [
 
     {
@@ -204,7 +207,7 @@
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/Sites/', variables('cmWebAppNameTidy'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/Extensions/MSDeploy')]"
       ]
     },
 
@@ -248,7 +251,7 @@
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/Sites/', variables('cdWebAppNameTidy'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/Extensions/MSDeploy')]"
       ]
     }
 
