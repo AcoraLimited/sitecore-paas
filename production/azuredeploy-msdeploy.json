@@ -134,7 +134,7 @@
       "name": "azuredeploy-nested-msdeploy-slot",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
-              "[resourceId('Microsoft.Sql/servers/databases', concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy')))]"
+              "[resourceId('Microsoft.Sql/servers/databases/', concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy')))]"
       ],
       "properties": {
         "mode": "Incremental",
