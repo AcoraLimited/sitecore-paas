@@ -211,28 +211,27 @@
           "IP Security Client IP Mask": "[parameters('securityClientIpMask')]"
         }
       }
-    }
-
-    /*
+    },
+    
     {
-      "name": "[concat(variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/appsettings')]",
+      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmSlotNameTidy'), '/appsettings')]",
       "type": "Microsoft.Web/sites/slots/config",
       "apiVersion": "[variables('webApiVersion')]",
       "properties": {
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmSlotNameTidy'), '/Extensions/MSDeploy')]"
       ]
     },
 
     {
-      "name": "[concat(variables('cdWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
+      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdSlotNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmSlotNameTidy'), '/Extensions/MSDeploy')]"
       ],
       "properties": {
         "packageUri": "[parameters('cdMsdeployPackageurl')]",
@@ -259,17 +258,16 @@
     },
 
     {
-      "name": "[concat(variables('cdWebAppNameTidy'), '/', parameters('slotName'), '/appsettings')]",
+      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdSlotNameTidy'), '/appsettings')]",
       "type": "Microsoft.Web/sites/slots/config",
       "apiVersion": "[variables('webApiVersion')]",
       "properties": {
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdSlotNameTidy'), '/Extensions/MSDeploy')]"
       ]
     }
 
-    */
   ]
 }
