@@ -205,10 +205,10 @@
       "apiVersion": "[variables('webApiVersion')]",
       "properties": {
         "WEBSITE_DYNAMIC_CACHE": 0
-      },
-      "dependsOn": [
+      }
+      /*"dependsOn": [
         "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/Extensions/MSDeploy')]"
-      ]
+      ]*/
     },
 
     {
@@ -249,10 +249,10 @@
       "apiVersion": "[variables('webApiVersion')]",
       "properties": {
         "WEBSITE_DYNAMIC_CACHE": 0
-      },
-      "dependsOn": [
+      }
+      /*"dependsOn": [
         "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/Extensions/MSDeploy')]"
-      ]
+      ]*/
     }
 
   ]
