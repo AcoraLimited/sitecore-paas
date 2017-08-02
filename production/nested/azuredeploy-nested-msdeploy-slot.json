@@ -169,7 +169,7 @@
   "resources": [
 
     {
-      "name": "[concat(variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/MSDeploy')]",
+      "name": "[concat(variables('cmWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
@@ -211,7 +211,7 @@
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/slots/', variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
       ]
     },
 
@@ -221,7 +221,7 @@
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/slots/', variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
       ],
       "properties": {
         "packageUri": "[parameters('cdMsdeployPackageurl')]",
@@ -255,7 +255,7 @@
         "WEBSITE_DYNAMIC_CACHE": 0
       },
       "dependsOn": [
-        "[concat('Microsoft.Web/sites/slots/', variables('cmWebAppNameTidy'), '/', parameters('slotName'), '/Extensions/MSDeploy')]"
+        "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'), '/Extensions/MSDeploy')]"
       ]
     }
 

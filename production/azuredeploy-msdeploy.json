@@ -114,8 +114,12 @@
       }
     },
     
+    */
 
     /* Copy Sitecore Web Database for Staging */
+
+    /*
+    
     {
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2014-04-01-preview",
@@ -130,7 +134,7 @@
             }
     },            
 
-    /*
+    */
 
     /* Deploy Sitecore Code Only to Staging Slot */
     {
