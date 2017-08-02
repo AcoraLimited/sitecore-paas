@@ -10,6 +10,8 @@
     "appInsightsApiVersion": "2014-08-01",
     "cmWebAppNameTidy": "[toLower(trim(parameters('cmWebappName')))]",
     "cdWebAppNameTidy": "[toLower(trim(parameters('cdWebappName')))]",
+    "cmSlotNameTidy": "[toLower(trim(parameters('cmSlotName')))]",
+    "cdSlotNameTidy": "[toLower(trim(parameters('cdSlotName')))]",
     "dbServerNameTidy": "[toLower(trim(parameters('sqlserverName')))]",
     "coreDbNameTidy": "[toLower(trim(parameters('coreSqldatabaseName')))]",
     "webDbNameTidy": "[toLower(trim(parameters('webSqldatabaseName')))]",
@@ -36,9 +38,17 @@
     },
     "cmWebappName": {
       "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-cm-', parameters('slotName'))]"
+      "defaultValue": "[concat(parameters('deploymentId'), '-cm')]"
     },
     "cdWebappName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-cd')]"
+    },
+    "cmSlotName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-cm-', parameters('slotName'))]"
+    },
+    "cdSlotName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-cd-', parameters('slotName'))]"
     },
@@ -169,7 +179,7 @@
   "resources": [
 
     {
-      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-', parameters('slotName'), '/MSDeploy')]",
+      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmSlotNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
