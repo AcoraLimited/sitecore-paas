@@ -54,9 +54,7 @@
   "resources": [
 
     /* Deploy Full Sitecore Application to Production Slot */    
-
-    /*
-
+    
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -112,13 +110,9 @@
           }
         }
       }
-    },
-    
-    */
+    },    
 
     /* Copy Sitecore Web Database for Staging */
-
-    /*
     
     {
             "type": "Microsoft.Sql/servers/databases",
@@ -134,13 +128,14 @@
             }
     },            
 
-    */
-
     /* Deploy Sitecore Code Only to Staging Slot */
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy-slot",
       "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+              "[resourceId('Microsoft.Sql/servers/databases', concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy')))]"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
