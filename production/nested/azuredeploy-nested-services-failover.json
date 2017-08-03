@@ -1,6 +1,7 @@
 ﻿{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "variables": {
     "webApiVersion": "2015-08-01",
     "dbApiVersion": "2014-04-01-preview",
@@ -163,7 +164,7 @@
           "skuCapacity": 3
         },
         "coreSqlDatabase": {
-          "ddition": "Standard",
+          "edition": "Standard",
           "maxSize": "268435456000",
           "serviceObjectiveLevel": "S1"
         },
@@ -260,6 +261,7 @@
       }
     }
   },
+
   "parameters": {
     "deploymentId": {
       "type": "string",
@@ -387,7 +389,7 @@
     },
     "applicationinsightsLocation": {
       "type": "string",
-      "defaultValue": "North Europe",
+      "defaultValue": "West Europe",
       "allowedValues": [
         "East US",
         "South Central US",
@@ -557,7 +559,10 @@
       }
     }
   },
+
   "resources": [
+
+    /* CM Hosting Plan */
     {
       "type": "Microsoft.Web/serverfarms",
       "name": "[variables('cmHostingPlanNameTidy')]",
@@ -574,6 +579,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* CD Hosting Plan */
     {
       "type": "Microsoft.Web/serverfarms",
       "name": "[variables('cdHostingPlanNameTidy')]",
@@ -590,6 +597,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* CM Web App (no slots) */
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cmWebAppNameTidy')]",
@@ -604,9 +613,9 @@
             "index.html"
           ],
           "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
-          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
+          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"          
         }
-      },
+      },      
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('cmHostingPlanNameTidy'))]"
@@ -651,7 +660,9 @@
           }
         }
       ]
-    },
+    },        
+   
+    /* CD Web App (no slots) */
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cdWebAppNameTidy')]",
@@ -714,70 +725,8 @@
         }
       ]
     },
-    {
-      "type": "Microsoft.Sql/servers",
-      "apiVersion": "[variables('dbApiVersion')]",
-      "properties": {
-        "administratorLogin": "[parameters('sqlserverLogin')]",
-        "administratorLoginPassword": "[parameters('sqlserverPassword')]",
-        "version": "[parameters('sqlserverVersion')]"
-      },
-      "name": "[variables('dbServerNameTidy')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "provider": "[parameters('sitecoreTagProvider')]"
-      },
-      "resources": [
-        {
-          "type": "firewallrules",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "endIpAddress": "0.0.0.0",
-            "startIpAddress": "0.0.0.0"
-          },
-          "name": "AllowAllWindowsAzureIps",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
-          ]
-        },
-        {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[variables('coreDbNameTidy')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        },
-        {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].masterSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].masterSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].masterSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[variables('masterDbNameTidy')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        }
-      ]
-    },
+    
+    /* Azure SQL Server (web) */
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -803,7 +752,8 @@
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
           ]
-        },
+        }        
+        /*
         {
           "type": "databases",
           "apiVersion": "[variables('dbApiVersion')]",
@@ -822,8 +772,11 @@
             "provider": "[parameters('sitecoreTagProvider')]"
           }
         }
+        */
       ]
     },
+
+    /* Azure Search */
     {
       "type": "Microsoft.Search/searchServices",
       "apiVersion": "[variables('searchApiVersion')]",
@@ -840,6 +793,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* Redis Cache */
     {
       "type": "Microsoft.Cache/Redis",
       "name": "[variables('redisCacheNameTidy')]",
@@ -857,6 +812,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* Application Insights */
     {
       "type": "Microsoft.Insights/Components",
       "name": "[variables('appInsightsNameTidy')]",
@@ -869,9 +826,13 @@
       "tags": {
         "provider": "[parameters('sitecoreTagProvider')]"
       }
-    }
+    }    
+
   ],
+  
   "outputs": {
+
+    /*
     "redisConnectionString": {
       "value": "[concat(reference(variables('redisCacheNameTidy')).hostName, ':', reference(variables('redisCacheNameTidy')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
       "type": "string"
@@ -879,6 +840,12 @@
     "applicationInsightsInstrumentationKey": {
       "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
       "type": "string"
+    },
+    "cdWebAppRef": {
+      "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
+      "type": "string"
     }
+    */
   }
+
 }

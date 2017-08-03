@@ -1,7 +1,11 @@
 ﻿{
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "parameters": {
+    "failoverResourceGroupName": {
+      "type": "string"      
+    },
     "keyVaultName": {
       "type": "string"
     },
@@ -24,12 +28,18 @@
       }
     }
   },
+
   "variables": {
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
     "sqlserverLoginSecretName": "SqlServerLogin",
     "sqlserverPasswordSecretName": "SqlServerPassword"
   },
+
   "resources": [
+
+    /* Production PaaS Infrastructure Deployment */
+
+    /*
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-services",
@@ -62,6 +72,48 @@
         }
       }
     },
+    */
+    
+    /* Failover PaaS Infrastructure Deployment */
+
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-services",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('failoverResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-services-failover.json"
+        },
+        "parameters": {
+          "sitecoreSku": {
+            "value": "[parameters('sitecoreSku')]"
+          },
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    }
+
+
+    /* Environment Customisations */
+
+    /*
     {
       "name": "azuredeploy-nested-services-custom",
       "type": "Microsoft.Resources/deployments",
@@ -78,5 +130,7 @@
         }
       }
     }
+    */
+
   ]
 }

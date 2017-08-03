@@ -23,6 +23,67 @@
   "variables": {},
 
   "resources": [
+
+
+    /* Traffic Manager */
+
+    /*
+      {       
+        "type": "Microsoft.Network/trafficManagerProfiles",
+        "name": "[parameters('trafficManagerProfiles_ffc_sc_name')]",
+        "apiVersion": "2017-05-01",
+        "location": "global",
+        "tags": {},
+        "scale": null,
+        "properties": {
+            "profileStatus": "Enabled",
+            "trafficRoutingMethod": "Priority",
+            "dnsConfig": {
+                "relativeName": "[parameters('trafficManagerProfiles_ffc_sc_name')]",
+                "fqdn": "[concat(parameters('trafficManagerProfiles_ffc_sc_name'),'.trafficmanager.net')]",
+                "ttl": 300
+            },
+            "monitorConfig": {
+                "protocol": "HTTP",
+                "port": 80,
+                "path": "/",
+                "intervalInSeconds": 30,
+                "toleratedNumberOfFailures": 3,
+                "timeoutInSeconds": 10
+            },
+            "endpoints": [
+                {
+                    "name": "Acora WWW",
+                    "type": "Microsoft.Network/trafficManagerProfiles/externalEndpoints",
+                    "properties": {
+                        "endpointStatus": "Enabled",
+                        "target": "www.acora.com",
+                        "weight": 1,
+                        "priority": 2,
+                        "endpointLocation": null
+                    }
+                },
+                {
+                    "name": "Production",
+                    "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
+                    "properties": {
+                        "endpointStatus": "Enabled",
+                        "targetResourceId": "[resourceId('Microsoft.Web/sites', parameters('sites_ffc_sc_cd_name'))]",
+                        "target": "[concat(parameters('trafficManagerProfiles_ffc_sc_name'),'-cd.azurewebsites.net')]",
+                        "weight": 1,
+                        "priority": 3,
+                        "endpointLocation": "West Europe"
+                    }
+                }
+            ]
+        },
+        "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', parameters('sites_ffc_sc_cd_name'))]"
+        ]
+    },
+
+    */
+
     {
       "type": "Microsoft.Insights/autoscaleSettings",
       "name": "[parameters('cdHostingplanAutoscaleName')]",
