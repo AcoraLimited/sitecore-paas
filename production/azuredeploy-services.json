@@ -38,8 +38,7 @@
   "resources": [
 
     /* Production PaaS Infrastructure Deployment */
-
-    /*
+    
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-services",
@@ -71,11 +70,11 @@
           }
         }
       }
-    },
-    */
+    }
 
     /* Failover PaaS Infrastructure Deployment */
 
+    /*
     {
       "apiVersion": "2017-05-10",
       "name": "azuredeploy-nested-services-failover",
@@ -109,6 +108,7 @@
         }
       }
     }
+    */
 
 
     /* Environment Customisations */
