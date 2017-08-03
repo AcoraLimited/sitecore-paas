@@ -178,7 +178,7 @@
       "properties": {
         "packageUri": "[parameters('cmMsdeployPackageurl')]",
         "dbType": "SQL",
-        "connectionString": "[parameters('cmConnectionData').connectionString]",
+        "connectionString": "[parameters('cmConnectionData').ConnectionString]",
         "setParameters": {
           "Application Path": "[variables('cmWebAppNameTidy')]",
           "Sitecore Admin New Password": "[parameters('sitecoreAdminPassword')]",
