@@ -58,8 +58,7 @@
 
     
     /* Deploy Full Sitecore Application to Production Slot */        
-    
-    /*
+        
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -115,8 +114,7 @@
           }
         }
       }
-    },    
-    */
+    },        
 
     /* Copy Sitecore Web Database for Staging */    
 
@@ -208,9 +206,15 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy.json"
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy-failover.json"
         },
         "parameters": {
+          "cmConnectionData": {
+              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cmConnectionData.value]"
+          },
+          "cdConnectionData": {
+              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cdConnectionData.value]"
+          },
           "cmMsdeployPackageurl": {
             "reference": {
               "keyVault": {

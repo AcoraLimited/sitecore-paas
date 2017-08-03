@@ -22,6 +22,12 @@
   },
 
   "parameters": {
+    "cdConnectionData": {
+      "type": "object"
+    },
+    "cmConnectionData": {
+      "type": "object"
+    },
     "deploymentId": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
@@ -164,7 +170,6 @@
 
   "resources": [
 
-    /* Deploy Sitecore CM to Production Instance */
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
@@ -173,19 +178,19 @@
       "properties": {
         "packageUri": "[parameters('cmMsdeployPackageurl')]",
         "dbType": "SQL",
-        "connectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",
+        "connectionString": "[parameters('cmConnectionData').ConnectionString]",
         "setParameters": {
           "Application Path": "[variables('cmWebAppNameTidy')]",
           "Sitecore Admin New Password": "[parameters('sitecoreAdminPassword')]",
-          "Core DB User Name": "[parameters('cmCoreSqldatabaseUsername')]",
+          "Core DB User Name": "[parameters('cmConnectionData').CoreDbUserName]",
           "Core DB Password": "[parameters('cmCoreSqldatabasePassword')]",
-          "Core Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-          "Core Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
-          "Master DB User Name": "[parameters('cmMasterSqldatabaseUsername')]",
+          "Core Admin Connection String": "[parameters('cmConnectionData').CoreAdminConnectionString]",
+          "Core Connection String": "[parameters('cmConnectionData').CoreConnectionString]",
+          "Master DB User Name": "[parameters('cmConnectionData').MasterDbUserName]",
           "Master DB Password": "[parameters('cmMasterSqldatabasePassword')]",
-          "Master Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-          "Master Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
-          "Web DB User Name": "[parameters('cmWebSqldatabaseUsername')]",
+          "Master Admin Connection String": "[parameters('cmConnectionData').MasterAdminConnectionString]",
+          "Master Connection String": "[parameters('cmConnectionData').MasterConnectionString]",
+          "Web DB User Name": "[parameters('cmConnectionData').WebDbUserName]",
           "Web DB Password": "[parameters('cmWebSqldatabasePassword')]",
           "Web Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('webSqlserverLogin'), ';Password=', parameters('webSqlserverPassword'), ';')]",
           "Web Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
@@ -200,7 +205,6 @@
       }
     },
 
-    /* Update CM Web App Settings */
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/', 'appsettings')]",
       "type": "Microsoft.Web/sites/config",
@@ -213,7 +217,6 @@
       ]
     },
 
-    /* Deploy Sitecore CD to Production Instance */
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
@@ -225,15 +228,15 @@
       "properties": {
         "packageUri": "[parameters('cdMsdeployPackageurl')]",
         "dbType": "SQL",
-        "connectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",
+        "connectionString": "[parameters('cdConnectionData').ConnectionString]",
         "setParameters": {
           "Application Path": "[variables('cdWebAppNameTidy')]",
           "Sitecore Admin New Password": "[parameters('sitecoreAdminPassword')]",
-          "Core DB User Name": "[parameters('cdCoreSqldatabaseUsername')]",
+          "Core DB User Name":  "[parameters('cdConnectionData').CoreDbUserName]",
           "Core DB Password": "[parameters('cdCoreSqldatabasePassword')]",
-          "Core Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-          "Core Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cdCoreSqldatabaseUsername'), ';Password=', parameters('cdCoreSqldatabasePassword'), ';')]",
-          "Web DB User Name": "[parameters('cdWebSqldatabaseUsername')]",
+          "Core Admin Connection String": "[parameters('cdConnectionData').CoreAdminConnectionString]",
+          "Core Connection String": "[parameters('cmConnectionData').CoreConnectionString]",
+          "Web DB User Name": "[parameters('cdConnectionData').WebDbUserName]",
           "Web DB Password": "[parameters('cdWebSqldatabasePassword')]",
           "Web Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('webSqlserverLogin'), ';Password=', parameters('webSqlserverPassword'), ';')]",
           "Web Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
@@ -246,7 +249,6 @@
       }
     },
 
-    /* Update CD Web App Settings */
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/', 'appsettings')]",
       "type": "Microsoft.Web/sites/config",
@@ -259,35 +261,5 @@
       ]
     }
 
-  ],
-
-"outputs": {
-    
-    "cdConnectionData" : {
-        "type" : "secureObject",
-        "value": {                
-            "ConnectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",                                
-            "CoreAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-            "CoreConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
-            "CoreDbUserName":  "[parameters('cdCoreSqldatabaseUsername')]",
-            "WebDbUserName": "[parameters('cdWebSqldatabaseUsername')]"            
-        }            
-    },
-
-    "cmConnectionData": {
-      "type": "secureObject",
-      "value": {
-        "ConnectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",                
-        "CoreAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-        "CoreConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
-        "MasterAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
-        "MasterConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
-        "CoreDbUserName":  "[parameters('cmCoreSqldatabaseUsername')]",
-        "WebDbUserName": "[parameters('cmWebSqldatabaseUsername')]",
-        "MasterDbUserName": "[parameters('cmMasterSqldatabaseUsername')]"
-      }
-    }
-    
-  }
-
+  ]
 }
