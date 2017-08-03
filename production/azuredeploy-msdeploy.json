@@ -117,7 +117,6 @@
     },        
 
     /* Copy Sitecore Web Database for Staging */    
-
     /*
     {
             "type": "Microsoft.Sql/servers/databases",
@@ -264,14 +263,6 @@
 
   ],
 
-    "outputs": {
-
-      /*
-         "sourceDatabaseId" : {
-            "type" : "string",
-            "value": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"    
-        }
-      */
-    }
+    "outputs": {}
 
 }
