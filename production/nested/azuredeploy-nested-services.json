@@ -1121,6 +1121,14 @@
     "webDbReplicaNameTidy": {
       "value": "[variables('webDbNameTidy')]",
       "type": "string"
+    },
+    "cdWebSqldatabaseReplicaUsername": {
+      "value": "[parameters('cdWebSqldatabaseUsername')]",
+      "type": "string"
+    },
+    "cmWebSqldatabaseReplicaUsername": {
+      "value": "[parameters('cmWebSqldatabaseUsername')]",
+      "type": "string"
     }
   }
 

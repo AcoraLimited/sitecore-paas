@@ -271,7 +271,8 @@
             "CoreAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
             "CoreConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
             "CoreDbUserName":  "[parameters('cdCoreSqldatabaseUsername')]",
-            "WebDbUserName": "[parameters('cdWebSqldatabaseUsername')]"            
+            "WebDbUserName": "[parameters('cdWebSqldatabaseUsername')]",
+            "WebDbName": "[variables('webDbNameTidy')]"            
         }            
     },
 
@@ -285,6 +286,7 @@
         "MasterConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
         "CoreDbUserName":  "[parameters('cmCoreSqldatabaseUsername')]",
         "WebDbUserName": "[parameters('cmWebSqldatabaseUsername')]",
+        "WebDbName": "[variables('webDbNameTidy')]",            
         "MasterDbUserName": "[parameters('cmMasterSqldatabaseUsername')]"
       }
     }

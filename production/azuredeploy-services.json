@@ -113,7 +113,13 @@
           },
           "webDbReplicaNameTidy": {
             "value": "[reference('azuredeploy-nested-services').outputs.webDbReplicaNameTidy.value]"
-          }
+          },
+          "cmWebSqldatabaseReplicaUsername": {
+            "value": "[reference('azuredeploy-nested-services').outputs.cmWebSqldatabaseReplicaUsername.value]"
+          },
+          "cdWebSqldatabaseReplicaUsername": {
+            "value": "[reference('azuredeploy-nested-services').outputs.cdWebSqldatabaseReplicaUsername.value]"
+          }      
         }
       }
     }
