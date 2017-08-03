@@ -37,8 +37,7 @@
 
   "resources": [
 
-    /* Production PaaS Infrastructure Deployment */
-    
+    /* Production PaaS Infrastructure Deployment */    
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-services",
@@ -70,11 +69,9 @@
           }
         }
       }
-    }
+    },
 
     /* Failover PaaS Infrastructure Deployment */
-
-    /*
     {
       "apiVersion": "2017-05-10",
       "name": "azuredeploy-nested-services-failover",
@@ -104,15 +101,21 @@
               },
               "secretName": "[variables('sqlserverPasswordSecretName')]"
             }
+          },
+          "prodWebDatabaseId": {
+            "value": "[reference('azuredeploy-nested-services').outputs.webDatabaseResourceId.value]"
+          },
+          "coreDatabaseConnectionString": {
+            "value": "[reference('azuredeploy-nested-services').outputs.coreDatabaseConnectionString.value]"
+          },
+          "masterDatabaseConnectionString": {
+            "value": "[reference('azuredeploy-nested-services').outputs.masterDatabaseConnectionString.value]"
           }
         }
       }
     }
-    */
-
 
     /* Environment Customisations */
-
     /*
     {
       "name": "azuredeploy-nested-services-custom",

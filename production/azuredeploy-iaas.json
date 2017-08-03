@@ -126,13 +126,14 @@
   ],
 
   "outputs": {            
-          "vnetData": {
-            "value": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs]",
-            "type": "object"
-          },
-          "appVmFQDN": {
-            "type" : "string",
-            "value": "[reference(concat(variables('appVmSettings').Name,'-pip')).dnsSettings.fqdn]"          
-          }
-        }  
+    "vnetData": {
+      "value": "[reference('azuredeploy-nested-iaas-network').outputs.subnetIDs]",
+      "type": "object"
+    },
+    "appVmFQDN": {
+      "type" : "string",
+      "value": "[reference(concat(variables('appVmSettings').Name,'-pip')).dnsSettings.fqdn]"          
+    }
+  }  
+  
 }

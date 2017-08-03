@@ -585,6 +585,8 @@
   },
 
   "resources": [
+
+    /* CM Hosting Plan */
     {
       "type": "Microsoft.Web/serverfarms",
       "name": "[variables('cmHostingPlanNameTidy')]",
@@ -601,6 +603,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* CD Hosting Plan */
     {
       "type": "Microsoft.Web/serverfarms",
       "name": "[variables('cdHostingPlanNameTidy')]",
@@ -617,6 +621,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* CM Web App */
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cmWebAppNameTidy')]",
@@ -678,130 +684,9 @@
           }
         }
       ]
-    },        
-    {
-      "type": "Microsoft.Web/sites/slots",
-      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'))]",
-      "apiVersion": "[variables('webApiVersion')]",
-      "dependsOn": [                             
-            "[resourceId('Microsoft.Web/sites/', variables('cmWebAppNameTidy'))]"            
-      ],
-      "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cmHostingPlanNameTidy'))]",
-        "siteConfig": {
-          "use32BitWorkerProcess": "[variables('webUse32BitWorkerProcess')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
-          "alwaysOn": "[variables('webAlwaysOn')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
-          "phpVersion": "",
-          "defaultDocuments": [
-            "index.html"
-          ],
-          "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
-          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
-        }
-      },
-      "location": "[parameters('location')]",
-      "tags": {
-        "provider": "[parameters('sitecoreTagProvider')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "[variables('webApiVersion')]",
-          "name": "connectionstrings",
-          "type": "config",
-          "dependsOn": [            
-            "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-', parameters('slotName'))]",
-            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
-            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('masterDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"
-          ],
-          "properties": {
-            "core": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
-              "type": "SQLAzure"
-            },
-            "master": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
-              "type": "SQLAzure"
-            },
-            "web": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
-              "type": "SQLAzure"
-            },
-            "cloud.search": {
-              "value": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
-              "type": "Custom"
-            },
-            "appinsights.instrumentationkey": {
-              "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
-              "type": "Custom"
-            }
-          }
-        }
-      ]
-    },    
-    {
-      "type": "Microsoft.Web/sites/slots",
-      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
-      "apiVersion": "[variables('webApiVersion')]",
-      "dependsOn": [                             
-            "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]"            
-      ],
-      "properties": {
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
-        "siteConfig": {
-          "use32BitWorkerProcess": "[variables('webUse32BitWorkerProcess')[variables('skuMap')[parameters('sitecoreSku')].cdHostingPlan.skuName]]",
-          "alwaysOn": "[variables('webAlwaysOn')[variables('skuMap')[parameters('sitecoreSku')].cdHostingPlan.skuName]]",
-          "phpVersion": "",
-          "defaultDocuments": [
-            "index.html"
-          ],
-          "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
-          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
-        }
-      },
-      "location": "[parameters('location')]",
-      "tags": {
-        "provider": "[parameters('sitecoreTagProvider')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "[variables('webApiVersion')]",
-          "name": "connectionstrings",
-          "type": "config",
-          "dependsOn": [            
-            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",
-            "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
-            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
-            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]"            
-          ],
-          "properties": {
-            "core": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cdCoreSqldatabaseUsername'), ';Password=', parameters('cdCoreSqldatabasePassword'), ';')]",
-              "type": "SQLAzure"
-            },
-            "web": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
-              "type": "SQLAzure"
-            },
-            "cloud.search": {
-              "value": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
-              "type": "Custom"
-            },
-            "appinsights.instrumentationkey": {
-              "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
-              "type": "Custom"
-            },
-            "redis.sessions": {
-              "value": "[concat(reference(variables('redisCacheNameTidy')).hostName, ':', reference(variables('redisCacheNameTidy')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
-              "type": "Custom"
-            }
-          }
-        }
-      ]
-    },    
+    },   
+    
+    /* CD Web App */
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cdWebAppNameTidy')]",
@@ -864,6 +749,135 @@
         }
       ]
     },
+
+    /* CM Web App Staging Slot */
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmWebAppNameTidy'), '-',  parameters('slotName'))]",
+      "apiVersion": "[variables('webApiVersion')]",
+      "dependsOn": [                             
+            "[resourceId('Microsoft.Web/sites/', variables('cmWebAppNameTidy'))]"            
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cmHostingPlanNameTidy'))]",
+        "siteConfig": {
+          "use32BitWorkerProcess": "[variables('webUse32BitWorkerProcess')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
+          "alwaysOn": "[variables('webAlwaysOn')[variables('skuMap')[parameters('sitecoreSku')].cmHostingPlan.skuName]]",
+          "phpVersion": "",
+          "defaultDocuments": [
+            "index.html"
+          ],
+          "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
+          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
+        }
+      },
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[parameters('sitecoreTagProvider')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('webApiVersion')]",
+          "name": "connectionstrings",
+          "type": "config",
+          "dependsOn": [            
+            "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmWebAppNameTidy'), '-', parameters('slotName'))]",
+            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
+            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('masterDbNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"
+          ],
+          "properties": {
+            "core": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "master": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "web": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "cloud.search": {
+              "value": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
+              "type": "Custom"
+            },
+            "appinsights.instrumentationkey": {
+              "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
+              "type": "Custom"
+            }
+          }
+        }
+      ]
+    },   
+    
+    /* CD Web App Staging Slot */
+    {
+      "type": "Microsoft.Web/sites/slots",
+      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
+      "apiVersion": "[variables('webApiVersion')]",
+      "dependsOn": [                             
+            "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]"            
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
+        "siteConfig": {
+          "use32BitWorkerProcess": "[variables('webUse32BitWorkerProcess')[variables('skuMap')[parameters('sitecoreSku')].cdHostingPlan.skuName]]",
+          "alwaysOn": "[variables('webAlwaysOn')[variables('skuMap')[parameters('sitecoreSku')].cdHostingPlan.skuName]]",
+          "phpVersion": "",
+          "defaultDocuments": [
+            "index.html"
+          ],
+          "remoteDebuggingEnabled": "[parameters('webAppRemoteDebuggingEnabled')]",
+          "remoteDebuggingVersion": "[parameters('webAppRemoteDebuggingVersion')]"
+        }
+      },
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[parameters('sitecoreTagProvider')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('webApiVersion')]",
+          "name": "connectionstrings",
+          "type": "config",
+          "dependsOn": [            
+            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",
+            "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
+            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
+            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]"            
+          ],
+          "properties": {
+            "core": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cdCoreSqldatabaseUsername'), ';Password=', parameters('cdCoreSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "web": {
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
+              "type": "SQLAzure"
+            },
+            "cloud.search": {
+              "value": "[concat('serviceUrl=https://', variables('searchServiceNameTidy'), '.search.windows.net;apiVersion=', variables('searchApiVersion'), ';apiKey=', listAdminKeys(resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy')), variables('searchApiVersion')).primaryKey)]",
+              "type": "Custom"
+            },
+            "appinsights.instrumentationkey": {
+              "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
+              "type": "Custom"
+            },
+            "redis.sessions": {
+              "value": "[concat(reference(variables('redisCacheNameTidy')).hostName, ':', reference(variables('redisCacheNameTidy')).sslPort, ',password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy')), variables('redisApiVersion')).primaryKey, ',ssl=True,abortConnect=False')]",
+              "type": "Custom"
+            }
+          }
+        }
+      ]
+    },    
+
+    /* Applications SQL Server and Database */
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -909,7 +923,9 @@
           }
         }  
       ]
-    },            
+    },          
+    
+    /* Core SQL Server and Databases */
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -974,6 +990,8 @@
         }
       ]
     },
+
+    /* Web SQL Server and Database */
     {
       "type": "Microsoft.Sql/servers",
       "apiVersion": "[variables('dbApiVersion')]",
@@ -1018,28 +1036,10 @@
             "provider": "[parameters('sitecoreTagProvider')]"
           }
         }
-        /*
-        {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[concat(variables('webDbNameTidy'), '-', parameters('slotName'))]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        }
-        */
       ]
     },
+
+    /* Azure Search */
     {
       "type": "Microsoft.Search/searchServices",
       "apiVersion": "[variables('searchApiVersion')]",
@@ -1056,6 +1056,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* Redis Cache */
     {
       "type": "Microsoft.Cache/Redis",
       "name": "[variables('redisCacheNameTidy')]",
@@ -1073,6 +1075,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
+
+    /* Application Insights */
     {
       "type": "Microsoft.Insights/Components",
       "name": "[variables('appInsightsNameTidy')]",
@@ -1086,6 +1090,7 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     }    
+    
   ],
   
   "outputs": {
@@ -1099,6 +1104,18 @@
     },
     "cdWebAppRef": {
       "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
+      "type": "string"
+    },
+    "webDatabaseResourceId": {
+      "value": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]",
+      "type": "string"
+    },
+    "coreDatabaseConnectionString": {
+      "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
+      "type": "string"
+    },
+    "masterDatabaseConnectionString": {
+      "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
       "type": "string"
     }
   }

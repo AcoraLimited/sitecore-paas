@@ -263,6 +263,15 @@
   },
 
   "parameters": {
+    "prodWebDatabaseId": {
+      "type": "string"      
+    },
+    "coreDatabaseConnectionString": {
+      "type": "string"
+    },
+    "masterDatabaseConnectionString": {
+      "type": "string"
+    },
     "deploymentId": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
@@ -631,18 +640,16 @@
           "dependsOn": [
             "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
-            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('masterDbNameTidy'))]",
+            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",            
             "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"
           ],
           "properties": {
             "core": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cmCoreSqldatabaseUsername'), ';Password=', parameters('cmCoreSqldatabasePassword'), ';')]",
+              "value": "[parameters('coreDatabaseConnectionString']",
               "type": "SQLAzure"
             },
             "master": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
+              "value": "[parameters('masterDatabaseConnectionString']",
               "type": "SQLAzure"
             },
             "web": {
@@ -696,13 +703,12 @@
             "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]",
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
-            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
+            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",            
             "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"
           ],
           "properties": {
             "core": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('cdCoreSqldatabaseUsername'), ';Password=', parameters('cdCoreSqldatabasePassword'), ';')]",
+              "value": "[parameters('coreDatabaseConnectionString']",
               "type": "SQLAzure"
             },
             "web": {
@@ -752,27 +758,21 @@
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
           ]
-        }        
-        /*
+        },        
+            /* Create Geo-Replica of Sitecore Web Database */    
         {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[variables('webDbNameTidy')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        }
-        */
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
+            ],
+            "properties": {
+                "createMode": "OnlineSecondary",
+                "sourceDatabaseId": "[parameters('prodWebDatabaseId')]"                
+            }
+        }          
       ]
     },
 
