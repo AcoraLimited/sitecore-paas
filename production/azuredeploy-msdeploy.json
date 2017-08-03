@@ -60,7 +60,7 @@
     /* Deploy Full Sitecore Application to Production Slot */        
         
     {
-      "apiVersion": "2015-01-01",
+      "apiVersion": "2017-05-10",
       "name": "azuredeploy-nested-msdeploy",
       "type": "Microsoft.Resources/deployments",
       "properties": {
