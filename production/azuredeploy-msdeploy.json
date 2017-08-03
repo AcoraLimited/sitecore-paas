@@ -2,6 +2,9 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "failoverResourceGroupName": {
+      "type": "string"      
+    },
     "deploymentId": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
@@ -53,8 +56,10 @@
 
   "resources": [
 
-    /* Deploy Full Sitecore Application to Production Slot */    
     
+    /* Deploy Full Sitecore Application to Production Slot */        
+    
+    /*
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy",
@@ -111,9 +116,11 @@
         }
       }
     },    
+    */
 
-    /* Copy Sitecore Web Database for Staging */
-    
+    /* Copy Sitecore Web Database for Staging */    
+
+    /*
     {
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2014-04-01-preview",
@@ -127,8 +134,10 @@
                 "sourceDatabaseId": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"                
             }
     },            
+    */
 
     /* Deploy Sitecore Code Only to Staging Slot */
+    /*
     {
       "apiVersion": "2015-01-01",
       "name": "azuredeploy-nested-msdeploy-slot",
@@ -187,16 +196,78 @@
           }
         }
       }
+    },
+    */
+    
+    /* Deploy Sitecore Code Only to Failover Site */
+    {
+      "apiVersion": "2017-05-10",
+      "name": "azuredeploy-nested-msdeploy-failover",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('failoverResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy.json"
+        },
+        "parameters": {
+          "cmMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cmLiteMsdeployPackageurlSecretName')]"
+            }
+          },
+          "cdMsdeployPackageurl": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('cdLiteMsdeployPackageurlSecretName')]"
+            }
+          },
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          },
+          "licenseXml": {
+            "value": "[parameters('licenseXml')]"
+          },
+          "sitecoreAdminPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sitecoreAdminPasswordSecretName')]"
+            }
+          }
+        }
+      }
     }
 
   ],
 
     "outputs": {
+
+      /*
          "sourceDatabaseId" : {
             "type" : "string",
             "value": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]"    
         }
+      */
     }
-
 
 }
