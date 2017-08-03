@@ -122,10 +122,11 @@
           }      
         }
       }
-    }
+    },
 
-    /* Environment Customisations */
-    /*
+    /* Environment Customisations */    
+
+    /* TODO: Add configuration to Failover site (requires new output of replicaCdWebAppRef) */
     {
       "name": "azuredeploy-nested-services-custom",
       "type": "Microsoft.Resources/deployments",
@@ -141,8 +142,7 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-services-custom.json"
         }
       }
-    }
-    */
+    }    
 
   ]
 }
