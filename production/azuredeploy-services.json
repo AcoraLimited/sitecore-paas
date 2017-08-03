@@ -73,12 +73,12 @@
       }
     },
     */
-    
+
     /* Failover PaaS Infrastructure Deployment */
 
     {
-      "apiVersion": "2015-01-01",
-      "name": "azuredeploy-nested-services",
+      "apiVersion": "2017-05-10",
+      "name": "azuredeploy-nested-services-failover",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[parameters('failoverResourceGroupName')]",
       "properties": {
