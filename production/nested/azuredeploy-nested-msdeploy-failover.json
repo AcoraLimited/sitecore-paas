@@ -23,10 +23,10 @@
 
   "parameters": {
     "cdConnectionData": {
-      "type": "object"
+      "type": "secureObject"
     },
     "cmConnectionData": {
-      "type": "object"
+      "type": "secureObject"
     },
     "deploymentId": {
       "type": "string",
@@ -178,19 +178,19 @@
       "properties": {
         "packageUri": "[parameters('cmMsdeployPackageurl')]",
         "dbType": "SQL",
-        "connectionString": "[parameters('cmConnectionData').value.ConnectionString]",
+        "connectionString": "[parameters('cmConnectionData').ConnectionString]",
         "setParameters": {
           "Application Path": "[variables('cmWebAppNameTidy')]",
           "Sitecore Admin New Password": "[parameters('sitecoreAdminPassword')]",
-          "Core DB User Name": "[parameters('cmConnectionData').value.CoreDbUserName]",
+          "Core DB User Name": "[parameters('cmConnectionData').CoreDbUserName]",
           "Core DB Password": "[parameters('cmCoreSqldatabasePassword')]",
-          "Core Admin Connection String": "[parameters('cmConnectionData').value.CoreAdminConnectionString]",
-          "Core Connection String": "[parameters('cmConnectionData').value.CoreConnectionString]",
-          "Master DB User Name": "[parameters('cmConnectionData').value.MasterDbUserName]",
+          "Core Admin Connection String": "[parameters('cmConnectionData').CoreAdminConnectionString]",
+          "Core Connection String": "[parameters('cmConnectionData').CoreConnectionString]",
+          "Master DB User Name": "[parameters('cmConnectionData').MasterDbUserName]",
           "Master DB Password": "[parameters('cmMasterSqldatabasePassword')]",
-          "Master Admin Connection String": "[parameters('cmConnectionData').value.MasterAdminConnectionString]",
-          "Master Connection String": "[parameters('cmConnectionData').value.MasterConnectionString]",
-          "Web DB User Name": "[parameters('cmConnectionData').value.WebDbUserName]",
+          "Master Admin Connection String": "[parameters('cmConnectionData').MasterAdminConnectionString]",
+          "Master Connection String": "[parameters('cmConnectionData').MasterConnectionString]",
+          "Web DB User Name": "[parameters('cmConnectionData').WebDbUserName]",
           "Web DB Password": "[parameters('cmWebSqldatabasePassword')]",
           "Web Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('webSqlserverLogin'), ';Password=', parameters('webSqlserverPassword'), ';')]",
           "Web Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
@@ -228,15 +228,15 @@
       "properties": {
         "packageUri": "[parameters('cdMsdeployPackageurl')]",
         "dbType": "SQL",
-        "connectionString": "[parameters('cdConnectionData').value.ConnectionString]",
+        "connectionString": "[parameters('cdConnectionData').ConnectionString]",
         "setParameters": {
           "Application Path": "[variables('cdWebAppNameTidy')]",
           "Sitecore Admin New Password": "[parameters('sitecoreAdminPassword')]",
-          "Core DB User Name":  "[parameters('cdConnectionData').value.CoreDbUserName]",
+          "Core DB User Name":  "[parameters('cdConnectionData').CoreDbUserName]",
           "Core DB Password": "[parameters('cdCoreSqldatabasePassword')]",
-          "Core Admin Connection String": "[parameters('cdConnectionData').value.CoreAdminConnectionString]",
-          "Core Connection String": "[parameters('cmConnectionData').value.CoreConnectionString]",
-          "Web DB User Name": "[parameters('cdConnectionData').value.WebDbUserName]",
+          "Core Admin Connection String": "[parameters('cdConnectionData').CoreAdminConnectionString]",
+          "Core Connection String": "[parameters('cmConnectionData').CoreConnectionString]",
+          "Web DB User Name": "[parameters('cdConnectionData').WebDbUserName]",
           "Web DB Password": "[parameters('cdWebSqldatabasePassword')]",
           "Web Admin Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('webSqlserverLogin'), ';Password=', parameters('webSqlserverPassword'), ';')]",
           "Web Connection String": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'),';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
