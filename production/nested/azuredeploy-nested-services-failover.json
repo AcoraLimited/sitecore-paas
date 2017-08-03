@@ -263,6 +263,9 @@
   },
 
   "parameters": {
+    "webDbReplicaNameTidy": {
+      "type": "string"
+    },
     "prodWebDatabaseId": {
       "type": "string"      
     },
@@ -764,7 +767,7 @@
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2014-04-01-preview",
             "location": "[parameters('location')]",
-            "name": "[concat(variables('webDbServerNameTidy'), '/', variables('targetDbNameTidy'))]",
+            "name": "[concat(variables('webDbServerNameTidy'), '/', parameters('webDbReplicaNameTidy'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
             ],

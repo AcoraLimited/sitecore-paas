@@ -1090,7 +1090,7 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     }    
-    
+
   ],
   
   "outputs": {
@@ -1116,6 +1116,10 @@
     },
     "masterDatabaseConnectionString": {
       "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('masterDbNameTidy'),';User Id=', parameters('cmMasterSqldatabaseUsername'), ';Password=', parameters('cmMasterSqldatabasePassword'), ';')]",
+      "type": "string"
+    },
+    "webDbReplicaNameTidy": {
+      "value": "[variables('webDbNameTidy')]",
       "type": "string"
     }
   }

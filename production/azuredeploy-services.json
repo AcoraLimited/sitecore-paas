@@ -110,6 +110,9 @@
           },
           "masterDatabaseConnectionString": {
             "value": "[reference('azuredeploy-nested-services').outputs.masterDatabaseConnectionString.value]"
+          },
+          "webDbReplicaNameTidy": {
+            "value": "[reference('azuredeploy-nested-services').outputs.webDbReplicaNameTidy.value]"
           }
         }
       }
