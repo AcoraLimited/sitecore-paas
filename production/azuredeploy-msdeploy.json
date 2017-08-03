@@ -210,10 +210,10 @@
         },
         "parameters": {
           "cmConnectionData": {
-              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cmConnectionData.value]"
+              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cmConnectionData]"
           },
           "cdConnectionData": {
-              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cdConnectionData.value]"
+              "value": "[reference('azuredeploy-nested-msdeploy').outputs.cdConnectionData]"
           },
           "cmMsdeployPackageurl": {
             "reference": {

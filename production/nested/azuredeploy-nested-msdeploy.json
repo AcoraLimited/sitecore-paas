@@ -165,6 +165,8 @@
   "resources": [
 
     /* Deploy Sitecore CM to Production Instance */
+    
+    /*
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
@@ -199,8 +201,11 @@
         }
       }
     },
+    */
+
 
     /* Update CM Web App Settings */
+    /*
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/', 'appsettings')]",
       "type": "Microsoft.Web/sites/config",
@@ -212,8 +217,10 @@
         "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/Extensions/MSDeploy')]"
       ]
     },
+    */
 
     /* Deploy Sitecore CD to Production Instance */
+    /*
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
@@ -245,8 +252,10 @@
         }
       }
     },
+    */
 
     /* Update CD Web App Settings */
+    /*
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/', 'appsettings')]",
       "type": "Microsoft.Web/sites/config",
@@ -258,8 +267,10 @@
         "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/Extensions/MSDeploy')]"
       ]
     }
+    */
 
   ],
+
 
 "outputs": {
     
