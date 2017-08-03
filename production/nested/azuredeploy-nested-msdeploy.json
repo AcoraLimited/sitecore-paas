@@ -275,7 +275,7 @@
 "outputs": {
     
     "cdConnectionData" : {
-        "type" : "secureObject",
+        "type" : "object",
         "value": {                
             "ConnectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",                                
             "CoreAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",
@@ -286,7 +286,7 @@
     },
 
     "cmConnectionData": {
-      "type": "secureObject",
+      "type": "object",
       "value": {
         "ConnectionString": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=master;User Id=', parameters('sqlserverLogin'), '@', variables('dbServerNameTidy'), ';Password=', parameters('sqlserverPassword'), ';')]",                
         "CoreAdminConnectionString": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy')), variables('dbApiVersion')).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('coreDbNameTidy'),';User Id=', parameters('sqlserverLogin'), ';Password=', parameters('sqlserverPassword'), ';')]",

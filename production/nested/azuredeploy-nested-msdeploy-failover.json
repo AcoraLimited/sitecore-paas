@@ -23,10 +23,10 @@
 
   "parameters": {
     "cdConnectionData": {
-      "type": "secureObject"
+      "type": "object"
     },
     "cmConnectionData": {
-      "type": "secureObject"
+      "type": "object"
     },
     "deploymentId": {
       "type": "string",
