@@ -658,8 +658,7 @@
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
             "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]",
             "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('masterDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'), '-stage')]"
+            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', variables('webDbNameTidy'))]"            
           ],
           "properties": {
             "core": {
