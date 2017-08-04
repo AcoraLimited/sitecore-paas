@@ -850,7 +850,7 @@
           "name": "connectionstrings",
           "type": "config",
           "dependsOn": [
-            "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",                        
+            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",                   
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
