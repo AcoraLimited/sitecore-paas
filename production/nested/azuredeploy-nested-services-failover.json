@@ -590,6 +590,7 @@
   "resources": [
 
     /* CM Hosting Plan */
+    /*
     {
       "type": "Microsoft.Web/serverfarms",
       "name": "[variables('cmHostingPlanNameTidy')]",
@@ -606,7 +607,8 @@
         "provider": "[parameters('sitecoreTagProvider')]"
       }
     },
-
+    */
+    
     /* CD Hosting Plan */
     {
       "type": "Microsoft.Web/serverfarms",
@@ -626,6 +628,7 @@
     },
 
     /* CM Web App (no slots) */
+    /*
     {
       "type": "Microsoft.Web/sites",
       "name": "[variables('cmWebAppNameTidy')]",
@@ -686,7 +689,8 @@
         }
       ]
     },        
-   
+    */
+
     /* CD Web App (no slots) */
     {
       "type": "Microsoft.Web/sites",
