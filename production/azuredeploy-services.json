@@ -3,6 +3,10 @@
   "contentVersion": "1.0.0.0",
 
   "parameters": {
+    "slotName": {
+      "type": "string",
+      "defaultValue": "stage"
+    },
     "failoverResourceGroupName": {
       "type": "string"      
     },
@@ -48,6 +52,9 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-services.json"
         },
         "parameters": {
+          "slotName": {
+            "value": "[parameters('slotName')]"
+          },
           "sitecoreSku": {
             "value": "[parameters('sitecoreSku')]"
           },
