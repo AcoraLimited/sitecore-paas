@@ -266,8 +266,7 @@
 
   "parameters": {
     "slotName": {
-      "type": "string",
-      "defaultValue": "staging"
+      "type": "string"
     },
     "deploymentId": {
       "type": "string",
@@ -674,7 +673,7 @@
               "type": "SQLAzure"
             },
             "stage": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-stage',';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'),';User Id=', parameters('cmWebSqldatabaseUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
               "type": "SQLAzure"
             },
             "cloud.search": {
@@ -823,7 +822,7 @@
     /* CD Web App Staging Slot */
     {
       "type": "Microsoft.Web/sites/slots",
-      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",
+      "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",
       "apiVersion": "[variables('webApiVersion')]",
       "dependsOn": [                             
             "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]"            
@@ -851,7 +850,7 @@
           "name": "connectionstrings",
           "type": "config",
           "dependsOn": [
-            "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-',  parameters('slotName'))]",                        
+            "[concat(variables('cdWebAppNameTidy'), '/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",                        
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
