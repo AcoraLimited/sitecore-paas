@@ -43,7 +43,7 @@
           "profileStatus": "Enabled",
           "trafficRoutingMethod": "Priority",
           "dnsConfig": {
-              "relativeName": "[parameters('cdTrafficManagerName'))]",
+              "relativeName": "[parameters('cdTrafficManagerName')]",
               "fqdn": "[concat(parameters('cdTrafficManagerName'),'.trafficmanager.net')]",
               "ttl": 300
           },
