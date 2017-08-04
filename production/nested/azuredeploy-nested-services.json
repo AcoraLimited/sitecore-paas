@@ -1134,6 +1134,18 @@
     "cmWebSqldatabaseReplicaUsername": {
       "value": "[parameters('cmWebSqldatabaseUsername')]",
       "type": "string"
+    },
+    "coreDbReplicaNameTidy": {
+      "value": "[variables('coreDbNameTidy')]",
+      "type": "string"
+    },
+    "cdCoreSqldatabaseReplicaUsername": {
+      "value": "[parameters('cdCoreSqldatabaseUsername')]",
+      "type": "string"
+    },
+    "coreDatabaseResourceId": {
+      "value": "[resourceId('Microsoft.Sql/servers/databases', variables('dbServerNameTidy'), variables('coreDbNameTidy'))]",
+      "type": "string"
     }
   }
 

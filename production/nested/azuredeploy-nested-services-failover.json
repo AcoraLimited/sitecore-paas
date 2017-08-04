@@ -272,7 +272,16 @@
     "webDbReplicaNameTidy": {
       "type": "string"
     },
+    "cdCoreSqldatabaseReplicaUsername": {
+      "type": "string"
+    },
+    "coreDbReplicaNameTidy": {
+      "type": "string"
+    },
     "prodWebDatabaseId": {
+      "type": "string"      
+    },
+    "prodCoreDatabaseId": {
       "type": "string"      
     },
     "coreDatabaseConnectionString": {
@@ -713,11 +722,12 @@
             "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
             "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
             "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",            
-            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', parameters('webDbReplicaNameTidy'))]"
+            "[concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'), '/databases/', parameters('webDbReplicaNameTidy'))]",
+            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', parameters('coreDbReplicaNameTidy'))]"
           ],
           "properties": {
             "core": {
-              "value": "[parameters('coreDatabaseConnectionString')]",
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',parameters('coreDbReplicaNameTidy'),';User Id=', parameters('cdCoreSqldatabaseReplicaUsername'), ';Password=', parameters('cdCoreSqldatabasePassword'), ';')]",
               "type": "SQLAzure"
             },
             "web": {
@@ -741,6 +751,50 @@
       ]
     },
     
+    /* Azure SQL Server (core) */
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "[variables('dbApiVersion')]",
+      "properties": {
+        "administratorLogin": "[parameters('sqlserverLogin')]",
+        "administratorLoginPassword": "[parameters('sqlserverPassword')]",
+        "version": "[parameters('sqlserverVersion')]"
+      },
+      "name": "[variables('dbServerNameTidy')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "provider": "[parameters('sitecoreTagProvider')]"
+      },
+      "resources": [
+        {
+          "type": "firewallrules",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          },
+          "name": "AllowAllWindowsAzureIps",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
+          ]
+        },        
+        /* Create Geo-Replica of Sitecore Core Database */    
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "name": "[concat(variables('dbServerNameTidy'), '/', parameters('coreDbReplicaNameTidy'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
+            ],
+            "properties": {
+                "createMode": "OnlineSecondary",
+                "sourceDatabaseId": "[parameters('prodCoreDatabaseId')]"                
+            }
+        }          
+      ]
+    },
+
     /* Azure SQL Server (web) */
     {
       "type": "Microsoft.Sql/servers",

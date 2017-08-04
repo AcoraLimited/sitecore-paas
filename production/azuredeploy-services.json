@@ -105,6 +105,9 @@
           "prodWebDatabaseId": {
             "value": "[reference('azuredeploy-nested-services').outputs.webDatabaseResourceId.value]"
           },
+          "prodCoreDatabaseId": {
+            "value": "[reference('azuredeploy-nested-services').outputs.coreDatabaseResourceId.value]"
+          },
           "coreDatabaseConnectionString": {
             "value": "[reference('azuredeploy-nested-services').outputs.coreDatabaseConnectionString.value]"
           },
@@ -119,7 +122,13 @@
           },
           "cdWebSqldatabaseReplicaUsername": {
             "value": "[reference('azuredeploy-nested-services').outputs.cdWebSqldatabaseReplicaUsername.value]"
-          }      
+          },
+          "coreDbReplicaNameTidy": {
+            "value": "[reference('azuredeploy-nested-services').outputs.coreDbReplicaNameTidy.value]"
+          },   
+          "cdCoreSqldatabaseReplicaUsername": {
+            "value": "[reference('azuredeploy-nested-services').outputs.cdCoreSqldatabaseReplicaUsername.value]"
+          }   
         }
       }
     },
