@@ -318,7 +318,7 @@
           }
         ],
         "enabled": true,
-        "name": "[parameters('cdHostingplanAutoscaleName')]",
+        "name": "[concat(parameters('cdHostingplanAutoscaleName'), '-failover')]",
         "targetResourceUri": "[parameters('cdFailoverWebApp').planResourceId]",
         "targetResourceLocation": "[parameters('cdFailoverWebApp').location]",
         "notifications": []
