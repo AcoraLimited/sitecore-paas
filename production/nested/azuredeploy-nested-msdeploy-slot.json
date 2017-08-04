@@ -25,8 +25,7 @@
 
   "parameters": {
     "slotName": {
-      "type": "string",
-      "defaultValue": "staging"
+      "type": "string"
     },
     "deploymentId": {
       "type": "string",
@@ -178,6 +177,7 @@
 
   "resources": [
 
+    /*
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/', variables('cmSlotNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
@@ -224,15 +224,13 @@
         "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmSlotNameTidy'), '/Extensions/MSDeploy')]"
       ]
     },
+    */
 
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/', variables('cdSlotNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/slots/extensions",
       "location": "[parameters('location')]",
       "apiVersion": "[variables('webApiVersion')]",
-      "dependsOn": [
-        "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/slots/', variables('cmSlotNameTidy'), '/Extensions/MSDeploy')]"
-      ],
       "properties": {
         "packageUri": "[parameters('cdMsdeployPackageurl')]",
         "dbType": "SQL",

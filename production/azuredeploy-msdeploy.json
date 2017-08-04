@@ -36,7 +36,7 @@
     },
     "slotName": {
       "type": "string",
-      "defaultValue": "staging"
+      "defaultValue": "stage"
     }
   },
 
@@ -144,6 +144,9 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy-slot.json"
         },
         "parameters": {
+          "slotName": {
+             "value": "[parameters('slotName')]"
+          },
           "cmMsdeployPackageurl": {
             "reference": {
               "keyVault": {

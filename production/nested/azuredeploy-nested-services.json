@@ -864,7 +864,7 @@
               "type": "SQLAzure"
             },
             "web": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-stage', ';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbNameTidy'), '-', parameters('slotName'), ';User Id=', parameters('cdWebSqldatabaseUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
               "type": "SQLAzure"
             },
             "cloud.search": {
@@ -1042,7 +1042,8 @@
           "tags": {
             "provider": "[parameters('sitecoreTagProvider')]"
           }
-        },
+        }
+        /*
         {
           "type": "databases",
           "apiVersion": "[variables('dbApiVersion')]",
@@ -1052,7 +1053,7 @@
             "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.maxSize]",
             "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].webSqlDatabase.serviceObjectiveLevel]"
           },
-          "name": "[concat(variables('webDbNameTidy'), '-stage')]",
+          "name": "[concat(variables('webDbNameTidy'), '-', parameters('slotName'))]",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', variables('webDbServerNameTidy'))]"
@@ -1061,6 +1062,7 @@
             "provider": "[parameters('sitecoreTagProvider')]"
           }
         }
+        */
       ]
     },
 
