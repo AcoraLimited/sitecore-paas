@@ -847,7 +847,7 @@
         "planResourceId": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",        
         "appResourceId": "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]",
         "location": "[resourceGroup().location]",
-        "url": "[concat(variables('cdWebAppNameTidy'), 'azurewebsites.net')]"
+        "url": "[concat(variables('cdWebAppNameTidy'), '.azurewebsites.net')]"
       }
     }
 
