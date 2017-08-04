@@ -662,7 +662,7 @@
               "type": "SQLAzure"
             },
             "web": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbReplicaNameTidy'),';User Id=', parameters('cmWebSqldatabaseReplicaUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',parameters('webDbReplicaNameTidy'),';User Id=', parameters('cmWebSqldatabaseReplicaUsername'), ';Password=', parameters('cmWebSqldatabasePassword'), ';')]",
               "type": "SQLAzure"
             },
             "cloud.search": {
@@ -721,7 +721,7 @@
               "type": "SQLAzure"
             },
             "web": {
-              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',variables('webDbReplicaNameTidy'),';User Id=', parameters('cdWebSqldatabaseReplicaUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
+              "value": "[concat('Encrypt=True;TrustServerCertificate=False;Data Source=', reference(concat('Microsoft.Sql/servers/', variables('webDbServerNameTidy'))).fullyQualifiedDomainName, ',1433;Initial Catalog=',parameters('webDbReplicaNameTidy'),';User Id=', parameters('cdWebSqldatabaseReplicaUsername'), ';Password=', parameters('cdWebSqldatabasePassword'), ';')]",
               "type": "SQLAzure"
             },
             "cloud.search": {
