@@ -1102,9 +1102,14 @@
       "value": "[reference(resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))).InstrumentationKey]",
       "type": "string"
     },
-    "cdWebAppRef": {
-      "value": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",
-      "type": "string"
+    "cdProductionWebApp": {
+      "type": "object",
+      "value": {
+        "planResourceId": "[resourceId('Microsoft.Web/serverfarms', variables('cdHostingPlanNameTidy'))]",        
+        "appResourceId": "[resourceId('Microsoft.Web/sites/', variables('cdWebAppNameTidy'))]",
+        "location": "[resourceGroup().location]",
+        "url": "[concat(variables('cdWebAppNameTidy'), 'azurewebsites.net')]"
+      }
     },
     "webDatabaseResourceId": {
       "value": "[resourceId('Microsoft.Sql/servers/databases', variables('webDbServerNameTidy'), variables('webDbNameTidy'))]",

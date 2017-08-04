@@ -125,8 +125,7 @@
     },
 
     /* Environment Customisations */    
-
-    /* TODO: Add configuration to Failover site (requires new output of replicaCdWebAppRef) */
+    
     {
       "name": "azuredeploy-nested-services-custom",
       "type": "Microsoft.Resources/deployments",
@@ -134,8 +133,11 @@
       "properties": {        
         "mode": "Incremental",
         "parameters": {
-          "cdWebAppRef": {
-            "value": "[reference('azuredeploy-nested-services').outputs.cdWebAppRef.value]"
+          "cdProductionWebApp": {
+            "value": "[reference('azuredeploy-nested-services').outputs.cdProductionWebApp.value]"          
+          },
+          "cdFailoverWebApp": {
+            "value": "[reference('azuredeploy-nested-services-failover').outputs.cdFailoverWebApp.value]"
           }
         },
         "templateLink": {
