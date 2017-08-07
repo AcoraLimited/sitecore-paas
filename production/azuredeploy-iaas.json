@@ -12,7 +12,9 @@
 
   "variables": {
     "NetworkProviderAPI" : "2015-06-15",
-    "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+    "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",    
+    "sqlserverLoginSecretName": "SqlServerLogin",
+    "sqlserverPasswordSecretName": "SqlServerPassword",
     "iaasLoginSecretName": "IaasServerLogin",
     "iaasPasswordSecretName": "IaasServerPassword",
     "vNetSettings": { 
