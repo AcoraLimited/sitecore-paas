@@ -348,6 +348,10 @@
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-app-db')]"
     },
+    "optaSqldatabaseName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-opta-db')]"
+    },
     "cmCoreSqldatabaseUsername": {
       "type": "string",
       "minLength": 1,
@@ -919,6 +923,24 @@
             "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
           },
           "name": "[variables('appDbNameTidy')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ],
+          "tags": {
+            "provider": "[parameters('sitecoreTagProvider')]"
+          }
+        },
+        {
+          "type": "databases",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "edition": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.edition]",
+            "collation": "[parameters('sqldatabaseCollation')]",
+            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.maxSize]",
+            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
+          },
+          "name": "[variables('optaDbNameTidy')]",
           "location": "[parameters('location')]",
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
