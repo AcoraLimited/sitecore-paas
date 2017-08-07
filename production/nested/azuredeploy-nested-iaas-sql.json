@@ -22,6 +22,10 @@
             "type": "string",
             "defaultValue": "12.0"
         },
+        "appSqlserverName": {
+            "type": "string",
+            "defaultValue": "[concat(parameters('deploymentId'), '-app-sql')]"
+        },
         "appSqlserverLogin": {
             "type": "string",
             "minLength": 1,
