@@ -67,7 +67,7 @@
     {
         "apiVersion": "[variables('storageApiVersion')]",
         "name": "[parameters('storageAccountName')]",
-        "location": "[parameters('location')]",
+        "location": "[resourceGroup().location]",
         "type": "Microsoft.Storage/storageAccounts",
         "sku": {
             "name": "[parameters('storageSku')]"
