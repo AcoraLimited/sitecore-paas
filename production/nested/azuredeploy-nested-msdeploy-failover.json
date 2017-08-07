@@ -170,6 +170,7 @@
 
   "resources": [
 
+    /*
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
@@ -216,7 +217,9 @@
         "[concat('Microsoft.Web/sites/', variables('cmWebAppNameTidy'), '/Extensions/MSDeploy')]"
       ]
     },
+    */
 
+    
     {
       "name": "[concat(variables('cdWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
