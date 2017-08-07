@@ -41,6 +41,37 @@
 
   "resources": [
 
+    /* Create SQL PaaS Instance for Applications Server */        
+    {
+      "apiVersion": "2015-01-01",
+      "name": "azuredeploy-nested-iaas-sql",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-iaas-sql.json"
+        },
+        "parameters": {          
+          "sqlserverLogin": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverLoginSecretName')]"
+            }
+          },
+          "sqlserverPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "[variables('keyVaultId')]"
+              },
+              "secretName": "[variables('sqlserverPasswordSecretName')]"
+            }
+          }
+        }
+      }
+    },
+
     /* Create Public IP Address */
     { 
       "type": "Microsoft.Network/publicIPAddresses",

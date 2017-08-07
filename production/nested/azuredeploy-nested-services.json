@@ -15,10 +15,7 @@
     "dbServerNameTidy": "[toLower(trim(parameters('sqlserverName')))]",
     "coreDbNameTidy": "[toLower(trim(parameters('coreSqldatabaseName')))]",
     "webDbNameTidy": "[toLower(trim(parameters('webSqldatabaseName')))]",
-    "webDbServerNameTidy": "[toLower(trim(parameters('webSqlserverName')))]",
-    "appDbServerNameTidy": "[toLower(trim(parameters('appSqlserverName')))]",
-    "appDbNameTidy": "[toLower(trim(parameters('appSqldatabaseName')))]",  
-    "optaDbNameTidy": "[toLower(trim(parameters('optaSqldatabaseName')))]",  
+    "webDbServerNameTidy": "[toLower(trim(parameters('webSqlserverName')))]",    
     "masterDbNameTidy": "[toLower(trim(parameters('masterSqldatabaseName')))]",
     "searchServiceNameTidy": "[toLower(trim(parameters('searchserviceName')))]",
     "redisCacheNameTidy": "[toLower(trim(parameters('rediscacheName')))]",
@@ -319,20 +316,6 @@
       "minLength": 8,
       "defaultValue": "[parameters('sqlserverPassword')]"
     },
-    "appSqlserverName": {
-      "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-app-sql')]"
-    },
-    "appSqlserverLogin": {
-      "type": "string",
-      "minLength": 1,
-      "defaultValue": "[parameters('sqlserverLogin')]"
-    },
-    "appSqlserverPassword": {
-      "type": "securestring",
-      "minLength": 8,
-      "defaultValue": "[parameters('sqlserverPassword')]"
-    },
     "coreSqldatabaseName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-core-db')]"
@@ -344,15 +327,7 @@
     "webSqldatabaseName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-web-db')]"
-    },
-    "appSqldatabaseName": {
-      "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-app-db')]"
-    },
-    "optaSqldatabaseName": {
-      "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-opta-db')]"
-    },
+    },   
     "cmCoreSqldatabaseUsername": {
       "type": "string",
       "minLength": 1,

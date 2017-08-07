@@ -1,0 +1,139 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+
+    "variables": {
+        "dbApiVersion": "2014-04-01-preview",
+        "appDbServerNameTidy": "[toLower(trim(parameters('appSqlserverName')))]",
+        "appDbNameTidy": "[toLower(trim(parameters('appSqldatabaseName')))]",
+        "optaDbNameTidy": "[toLower(trim(parameters('optaSqldatabaseName')))]"
+    },
+
+    "parameters": {
+        "deploymentId": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "sqlserverVersion": {
+            "type": "string",
+            "defaultValue": "12.0"
+        },
+        "appSqlserverLogin": {
+            "type": "string",
+            "minLength": 1,
+            "defaultValue": "[parameters('sqlserverLogin')]"
+        },
+        "appSqlserverPassword": {
+            "type": "securestring",
+            "minLength": 8,
+            "defaultValue": "[parameters('sqlserverPassword')]"
+        },
+        "sqlserverLogin": {
+            "type": "string",
+            "minLength": 1
+        },
+        "sqlserverPassword": {
+            "type": "securestring",
+            "minLength": 8
+        },
+        "sqldatabaseCollation": {
+            "type": "string",
+            "defaultValue": "SQL_Latin1_General_CP1_CI_AS"
+        },
+        "sqldatabaseEdition": {
+            "type": "string",
+            "defaultValue": "Standard",
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium"
+            ]
+        },
+        "sqldatabaseMaxsize": {
+            "type": "string",
+            "defaultValue": "268435456000"
+        },
+        "sqldatabaseServiceobjectivelevel": {
+            "type": "string",
+            "defaultValue": "S1"
+        },
+        "appSqldatabaseName": {
+            "type": "string",
+            "defaultValue": "[concat(parameters('deploymentId'), '-app-db')]"
+        },
+        "optaSqldatabaseName": {
+            "type": "string",
+            "defaultValue": "[concat(parameters('deploymentId'), '-opta-db')]"
+        }
+    },
+
+    "resources": [
+
+    /* Applications SQL Server and Database */
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "[variables('dbApiVersion')]",
+      "properties": {
+        "administratorLogin": "[parameters('appSqlserverLogin')]",
+        "administratorLoginPassword": "[parameters('appSqlserverPassword')]",
+        "version": "[parameters('sqlserverVersion')]"
+      },
+      "name": "[variables('appDbServerNameTidy')]",
+      "location": "[parameters('location')]",
+      "resources": [
+        {
+          "type": "firewallrules",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          },
+          "name": "AllowAllWindowsAzureIps",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ]
+        },
+        {
+          "type": "databases",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "edition": "[parameters('sqldatabaseEdition')]",
+            "collation": "[parameters('sqldatabaseCollation')]",
+            "maxSizeBytes": "parameters('sqldatabaseMaxSize')]",
+            "requestedServiceObjectiveName": "[parameters('sqldatabaseServiceobjectivelevel')]"
+          },
+          "name": "[variables('appDbNameTidy')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ]
+        },
+        {
+          "type": "databases",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "properties": {
+            "edition": "[parameters('sqldatabaseEdition')]",
+            "collation": "[parameters('sqldatabaseCollation')]",
+            "maxSizeBytes": "parameters('sqldatabaseMaxSize')]",
+            "requestedServiceObjectiveName": "[parameters('sqldatabaseServiceobjectivelevel')]"
+          },
+          "name": "[variables('optaDbNameTidy')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
+          ]
+        }  
+      ]
+    }
+    
+    ],
+
+    "outputs": {
+     
+    }
+
+}
