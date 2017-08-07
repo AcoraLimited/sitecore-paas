@@ -68,6 +68,9 @@
           "uri": "https://raw.githubusercontent.com/AcoraLimited/Sitecore-PaaS/master/production/nested/azuredeploy-nested-msdeploy.json"
         },
         "parameters": {
+          "slotName": {
+             "value": "[parameters('slotName')]"
+          },
           "cmMsdeployPackageurl": {
             "reference": {
               "keyVault": {
@@ -114,7 +117,7 @@
         }
       }
     },        
-    
+
     /* Copy Sitecore Web Database for Staging */        
     {
             "type": "Microsoft.Sql/servers/databases",
