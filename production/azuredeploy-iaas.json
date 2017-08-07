@@ -7,10 +7,26 @@
     },
     "keyVaultResourceGroupName": {
       "type": "string"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "[take(concat('stor', replace(parameters('deploymentId'),'-','')), 23)]"
+    },
+    "storageSku": {
+      "type": "string",
+      "defaultValue": "Standard_GRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Standard_ZRS",
+        "Premium_LRS"
+      ]
     }        
   },
 
   "variables": {
+    "storageApiVersion": "2016-12-01",
     "NetworkProviderAPI" : "2015-06-15",
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",    
     "sqlserverLoginSecretName": "SqlServerLogin",
@@ -42,6 +58,32 @@
     },
 
   "resources": [
+
+    /* Storage Account for Backups */
+    {
+        "apiVersion": "[variables('storageApiVersion')]",
+        "name": "[parameters('storageAccountName')]",
+        "location": "[parameters('location')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "sku": {
+            "name": "[parameters('storageSku')]"
+        },
+        "kind": "Storage",
+        "properties": {
+            "encryption": {
+                "services": {
+                    "blob": {
+                        "enabled": true
+                    },
+                    "file": {
+                        "enabled": true
+                    }
+                },
+                "keySource": "Microsoft.Storage"
+            },
+            "supportsHttpsTrafficOnly": false
+        }
+    },
 
     /* Create SQL PaaS Instance for Applications Server */        
     {
