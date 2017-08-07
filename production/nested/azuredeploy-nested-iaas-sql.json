@@ -3,6 +3,7 @@
     "contentVersion": "1.0.0.0",
 
     "variables": {
+        "storageApiVersion": "2016-12-01",
         "dbApiVersion": "2014-04-01-preview",
         "appDbServerNameTidy": "[toLower(trim(parameters('appSqlserverName')))]",
         "appDbNameTidy": "[toLower(trim(parameters('appSqldatabaseName')))]",
@@ -17,6 +18,21 @@
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "[take(concat('stor', replace(parameters('deploymentId'),'-','')), 23)]"
+        },
+        "storageSku": {
+            "type": "string",
+            "defaultValue": "Standard_GRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ]
         },
         "sqlserverVersion": {
             "type": "string",
@@ -132,8 +148,34 @@
           ]
         }  
       ]
-    }
+    },
     
+    /* Storage Account for Backups */
+    {
+        "apiVersion": "[variables('storageApiVersion')]",
+        "name": "[parameters('storageAccountName')]",
+        "location": "[parameters('location')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "sku": {
+            "name": "[parameters('storageSku')]"
+        },
+        "kind": "Storage",
+        "properties": {
+            "encryption": {
+                "services": {
+                    "blob": {
+                        "enabled": true
+                    },
+                    "file": {
+                        "enabled": true
+                    }
+                },
+                "keySource": "Microsoft.Storage"
+            },
+            "supportsHttpsTrafficOnly": false
+        }
+    }  
+
     ],
 
     "outputs": {

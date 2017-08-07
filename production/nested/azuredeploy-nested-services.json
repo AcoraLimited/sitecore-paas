@@ -860,73 +860,7 @@
           }
         }
       ]
-    },    
-
-    /* Applications SQL Server and Database */
-    {
-      "type": "Microsoft.Sql/servers",
-      "apiVersion": "[variables('dbApiVersion')]",
-      "properties": {
-        "administratorLogin": "[parameters('appSqlserverLogin')]",
-        "administratorLoginPassword": "[parameters('appSqlserverPassword')]",
-        "version": "[parameters('sqlserverVersion')]"
-      },
-      "name": "[variables('appDbServerNameTidy')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "provider": "[parameters('sitecoreTagProvider')]"
-      },
-      "resources": [
-        {
-          "type": "firewallrules",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "endIpAddress": "0.0.0.0",
-            "startIpAddress": "0.0.0.0"
-          },
-          "name": "AllowAllWindowsAzureIps",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
-          ]
-        },
-        {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[variables('appDbNameTidy')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        },
-        {
-          "type": "databases",
-          "apiVersion": "[variables('dbApiVersion')]",
-          "properties": {
-            "edition": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.edition]",
-            "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.maxSize]",
-            "requestedServiceObjectiveName": "[variables('skuMap')[parameters('sitecoreSku')].coreSqlDatabase.serviceObjectiveLevel]"
-          },
-          "name": "[variables('optaDbNameTidy')]",
-          "location": "[parameters('location')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', variables('appDbServerNameTidy'))]"
-          ],
-          "tags": {
-            "provider": "[parameters('sitecoreTagProvider')]"
-          }
-        }  
-      ]
-    },          
+    },       
     
     /* Core SQL Server and Databases */
     {
