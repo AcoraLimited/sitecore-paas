@@ -167,8 +167,7 @@
 
   "resources": [
 
-    /* Deploy Sitecore CM to Production Instance */
-        
+    /* Deploy Sitecore CM to Production Instance */      
     {
       "name": "[concat(variables('cmWebAppNameTidy'), '/MSDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
