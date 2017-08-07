@@ -107,7 +107,7 @@
           "properties": {
             "edition": "[parameters('sqldatabaseEdition')]",
             "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "parameters('sqldatabaseMaxSize')]",
+            "maxSizeBytes": "[parameters('sqldatabaseMaxSize')]",
             "requestedServiceObjectiveName": "[parameters('sqldatabaseServiceobjectivelevel')]"
           },
           "name": "[variables('appDbNameTidy')]",
@@ -122,7 +122,7 @@
           "properties": {
             "edition": "[parameters('sqldatabaseEdition')]",
             "collation": "[parameters('sqldatabaseCollation')]",
-            "maxSizeBytes": "parameters('sqldatabaseMaxSize')]",
+            "maxSizeBytes": "[parameters('sqldatabaseMaxSize')]",
             "requestedServiceObjectiveName": "[parameters('sqldatabaseServiceobjectivelevel')]"
           },
           "name": "[variables('optaDbNameTidy')]",
