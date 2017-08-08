@@ -1,5 +1,5 @@
 Param(
-    [string] [Parameter(Mandatory=$true)] $StorageAccouuntResourceGroupName,
+    [string] [Parameter(Mandatory=$true)] $StorageAccountResourceGroupName,
     [string] [Parameter(Mandatory=$true)] $StorageAccountName,
     [string] [Parameter(Mandatory=$true)] $WebAppResourceGroupName,
     [string] $StorageAccountLocation = "West Europe",
