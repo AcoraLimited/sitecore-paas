@@ -1,6 +1,7 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+
   "parameters": {
     "deploymentId": {
       "type": "string",
@@ -26,10 +27,15 @@
         "Standard_ZRS",
         "Premium_LRS"
       ]
-    }        
+    },
+    "backupVaultName": {
+      "type": "string",
+      "defaultValue": "[concat(parameters('deploymentId'), '-vault')]"
+    }
   },
 
   "variables": {
+    "backupApiVersion": "2016-06-01",
     "storageApiVersion": "2016-12-01",
     "NetworkProviderAPI" : "2015-06-15",
     "keyVaultId": "[resourceId(parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",    
@@ -64,6 +70,9 @@
   "resources": [
 
     /* Storage Account for Backups */
+    /* Commented - included in ASE backup script */
+
+    /*
     {
         "apiVersion": "[variables('storageApiVersion')]",
         "name": "[parameters('storageAccountName')]",
@@ -88,6 +97,7 @@
             "supportsHttpsTrafficOnly": false
         }
     },
+    */
 
     /* Create SQL PaaS Instance for Applications Server */        
     {
@@ -132,6 +142,19 @@
               "domainNameLabel": "[concat(variables('appVmSettings').Name,'-pip')]"
           }
       }
+    },
+
+    /* Create Backup Vault */
+    {       
+      "apiVersion": "[parameters('backupApiVersion')]",
+      "name": "[parameters('backupVaultName')]",
+      "location": "[resourceGroup().location]",
+      "type": "Microsoft.RecoveryServices/vaults",
+      "sku": {
+          "name": "RS0",
+          "tier": "Standard"
+      },
+      "properties": {}
     },
 
     /* Provision Virtual Network */
