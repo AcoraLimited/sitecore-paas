@@ -140,8 +140,7 @@
       }
     },
 
-    /* Environment Customisations */    
-    
+    /* Environment Customisations */        
     {
       "name": "azuredeploy-nested-services-custom",
       "type": "Microsoft.Resources/deployments",
