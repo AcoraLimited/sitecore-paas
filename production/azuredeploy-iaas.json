@@ -35,11 +35,11 @@
     },
     "protectionContainers": {
       "type": "array",
-      "defaultValue": [ "[concat('iaasvmcontainer;iaasvmcontainerv2;', resourceGroup().name, ';', parameters('appVmName'))]"]
+      "defaultValue": [ "[concat('iaasvmcontainer;iaasvmcontainerv2;', resourceGroup().name, ';', parameters('appVmName'))]" ]
     },
     "protectedItems": {
       "type": "array",
-      "defaultValue": [ "[concat('vm;iaasvmcontainerv2;', resourceGroup().name], ';', parameters('appVmName'))]" ]
+      "defaultValue": [ "[concat('vm;iaasvmcontainerv2;', resourceGroup().name, ';', parameters('appVmName'))]" ]
     }
   },
 
