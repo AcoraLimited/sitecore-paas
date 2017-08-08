@@ -13,24 +13,33 @@
     "keyVaultResourceGroupName": {
       "type": "string"
     },
-    "storageAccountName": {
+    "appVmName": {
       "type": "string",
-      "defaultValue": "[take(concat('stor', replace(parameters('deploymentId'),'-','')), 23)]"
-    },
-    "storageSku": {
-      "type": "string",
-      "defaultValue": "Standard_GRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_RAGRS",
-        "Standard_ZRS",
-        "Premium_LRS"
-      ]
+      "defaultValue": "[concat(parameters('deploymentId'),'-app001')]"
     },
     "backupVaultName": {
       "type": "string",
       "defaultValue": "[concat(parameters('deploymentId'), '-vault')]"
+    },
+    "backupPolicyName": {
+      "type": "string",
+      "defaultValue": "DailyVMBackupPolicy"
+    },
+    "backupScheduleRunTimes": {
+      "type": "string",
+      "defaultValue": [ "2017-01-01T02:00:00.000Z" ]
+    },
+    "backupDailyRetentionDurationCount": {
+      "defaultValue": 30,
+      "type": "int"
+    },
+    "protectionContainers": {
+      "type": "array",
+      "defaultValue": [ "[concat('iaasvmcontainer;iaasvmcontainerv2;', resourceGroup().name, ';', parameters('appVmName'))]"]
+    },
+    "protectedItems": {
+      "type": "array",
+      "defaultValue": [ "[concat('vm;iaasvmcontainerv2;', resourceGroup().name], ';', parameters('appVmName'))]" ]
     }
   },
 
@@ -60,44 +69,14 @@
             }
         },
     "appVmSettings": {
-          "Name": "ffcazrapp001",
+          "Name": "[parameters('appVmName')]",
           "NameSuffix": "",
           "WindowsOSVersion": "2016-Datacenter",
           "VmSize": "Standard_A2_v2"        
         }
     },
 
-  "resources": [
-
-    /* Storage Account for Backups */
-    /* Commented - included in ASE backup script */
-
-    /*
-    {
-        "apiVersion": "[variables('storageApiVersion')]",
-        "name": "[parameters('storageAccountName')]",
-        "location": "[resourceGroup().location]",
-        "type": "Microsoft.Storage/storageAccounts",
-        "sku": {
-            "name": "[parameters('storageSku')]"
-        },
-        "kind": "Storage",
-        "properties": {
-            "encryption": {
-                "services": {
-                    "blob": {
-                        "enabled": true
-                    },
-                    "file": {
-                        "enabled": true
-                    }
-                },
-                "keySource": "Microsoft.Storage"
-            },
-            "supportsHttpsTrafficOnly": false
-        }
-    },
-    */
+  "resources": [   
 
     /* Create SQL PaaS Instance for Applications Server */        
     {
@@ -155,6 +134,57 @@
           "tier": "Standard"
       },
       "properties": {}
+    },
+
+    /* Define Backup Vault Policies */
+    {
+      "apiVersion": "2015-11-10",
+      "name": "[concat(parameters('backupVaultName'), '/', parameters('backupPolicyName'))]",
+      "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+      "dependsOn": [ "[concat('Microsoft.RecoveryServices/vaults/', parameters('backupVaultName'))]" ],
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "timeZone": "UTC",
+        "backupManagementType": "AzureIaasVM",
+        "schedulePolicy": {
+          "scheduleRunFrequency": "Daily",
+          "scheduleRunDays": null,
+          "scheduleRunTimes": "[parameters('backupScheduleRunTimes')]",
+          "schedulePolicyType": "SimpleSchedulePolicy"
+        },
+        "retentionPolicy": {
+          "dailySchedule": {
+            "retentionTimes": "[parameters('backupScheduleRunTimes')]",
+            "retentionDuration": {
+                "count": "[parameters('backupDailyRetentionDurationCount')]",
+                "durationType": "Days"
+            }
+          },
+          "weeklySchedule": null,          
+          "monthlySchedule": null,          
+          "yearlySchedule": null,
+          "retentionPolicyType": "LongTermRetentionPolicy"
+        }
+      }
+    },
+
+    /* Add Protected Items to Backup Vault */
+    {
+      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+      "name": "[concat(parameters('backupVaultName'), '/Azure/', parameters('protectionContainers')[copyIndex()], '/', parameters('protectedItems')[copyIndex()])]",
+      "apiVersion": "2016-06-01",
+      "copy": {
+          "name": "protectedItemsCopy",
+          "count": "[length(parameters('protectedItems'))]"
+      },
+      "properties": {
+          "protectedItemType": "Microsoft.ClassicCompute/virtualMachines",
+          "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]",
+          "sourceResourceId": "[resourceId('Microsoft.Compute/virtualMachines',last(parameters('protectedItems')[copyIndex()]))]"
+      },
+      "dependsOn": [
+          "[concat('Microsoft.RecoveryServices/vaults', '/', parameters('backupVaultName'), '/backupPolicies/', parameters('backupPolicyName'))]"
+      ]
     },
 
     /* Provision Virtual Network */
