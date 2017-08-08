@@ -146,7 +146,7 @@
 
     /* Create Backup Vault */
     {       
-      "apiVersion": "[parameters('backupApiVersion')]",
+      "apiVersion": "[variables('backupApiVersion')]",
       "name": "[parameters('backupVaultName')]",
       "location": "[resourceGroup().location]",
       "type": "Microsoft.RecoveryServices/vaults",
