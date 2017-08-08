@@ -19,7 +19,7 @@
     },
     "backupVaultName": {
       "type": "string",
-      "defaultValue": "[concat(parameters('deploymentId'), '-vault')]"
+      "defaultValue": "[concat(parameters('deploymentId'), '-rsv')]"
     },
     "backupPolicyName": {
       "type": "string",
