@@ -830,11 +830,7 @@
           "name": "connectionstrings",
           "type": "config",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]",                   
-            "[resourceId('Microsoft.Cache/Redis', variables('redisCacheNameTidy'))]",
-            "[resourceId('Microsoft.Search/searchServices', variables('searchServiceNameTidy'))]",
-            "[resourceId('Microsoft.Insights/Components', variables('appInsightsNameTidy'))]",
-            "[concat('Microsoft.Sql/servers/', variables('dbServerNameTidy'), '/databases/', variables('coreDbNameTidy'))]"            
+            "[concat('Microsoft.Web/sites/', variables('cdWebAppNameTidy'), '/slots/', variables('cdWebAppNameTidy'), '-', parameters('slotName'))]"           
           ],
           "properties": {
             "core": {
