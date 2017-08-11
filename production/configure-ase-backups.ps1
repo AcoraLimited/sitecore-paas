@@ -13,7 +13,7 @@ Param(
 #Select-AzureRmSubscription -SubscriptionName "TODO"
 
 # Create a new storage account if not found
-if ( (Get-AzureRmStorageAccount -StorageAccountName $StorageAccountName -ResourceGroupName $StorageAccountResourceGroupName -InformationAction SilentlyContinue) -eq $null) {
+if ( (Get-AzureRmStorageAccount -StorageAccountName $StorageAccountName -ResourceGroupName $StorageAccountResourceGroupName -ErrorAction Ignore) -eq $null) {
     New-AzureRmStorageAccount -ResourceGroupName $StorageAccountResourceGroupName -Name $StorageAccountName -Location $StorageAccountLocation -SkuName $StorageSku -Kind Storage -EnableEncryptionService "Blob,File"
 }
 
@@ -22,7 +22,7 @@ $storageAccountKey = Get-AzureRmStorageAccountKey -ResourceGroupName $StorageAcc
 $context = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $storageAccountKey[0].Value
 
 # Create storage container
-if ( (Get-AzureStorageContainer -Name $BlobContainerName -Context $context -InformationAction SilentlyContinue) -eq $null ) {
+if ( (Get-AzureStorageContainer -Name $BlobContainerName -Context $context -ErrorAction Ignore) -eq $null ) {
     New-AzureStorageContainer -Name $BlobContainerName -Permission Off -Context $context
 }
 
