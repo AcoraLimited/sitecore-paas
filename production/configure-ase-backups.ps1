@@ -9,7 +9,7 @@ Param(
     [int] $BackupFrequencyIntervalHours = 24
 )
 
-#Login-AzureRmAccount
+#Login-AzureRmAccount 
 #Select-AzureRmSubscription -SubscriptionName "TODO"
 
 # Create a new storage account if not found
