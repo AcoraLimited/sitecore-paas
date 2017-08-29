@@ -30,6 +30,10 @@
       "metadata": {
         "description": "Sitecore SKU controls the sizes and service levels of the provisioned resources"
       }
+    },
+    "adminIpAddresses": {
+      "type": "array",
+      "defaultValue": ["212.93.67.2", "109.231.231.114"]
     }
   },
 

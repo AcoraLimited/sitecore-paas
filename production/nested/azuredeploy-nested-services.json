@@ -266,6 +266,9 @@
     "slotName": {
       "type": "string"
     },
+    "adminIpAddresses": {
+      "type": "array"
+    },
     "deploymentId": {
       "type": "string",
       "defaultValue": "[resourceGroup().name]"
@@ -884,6 +887,22 @@
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
           ]
+        },
+        {
+          "type": "firewallRules",
+          "apiVersion": "[variables('dbApiVersion')]",
+          "name": "[concat('adminIp-', copyIndex())]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', variables('dbServerNameTidy'))]"
+          ],
+          "properties": {
+            "endIpAddress": "[parameters('adminIpAddresses')[copyIndex()]]",
+            "startIpAddress": "[parameters('adminIpAddresses')[copyIndex()]]"
+          },
+          "copy": {
+            "name": "coreSqlFirewallCopy",
+            "count": "[length(parameters('adminIpAddresses'))]"
+          }          
         },
         {
           "type": "databases",
