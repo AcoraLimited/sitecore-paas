@@ -43,4 +43,6 @@ if ($Delay) {
 ## Start the nested ARM template deployment
 ## azuredeploy.json => azuredeploy-services.json => azuredeploy.msdeploy.json
 New-AzureRmResourceGroupDeployment -Name $ResourceGroupName -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFile -TemplateParameterObject $parameters;
+
+# test update
                                     
