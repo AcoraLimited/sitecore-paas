@@ -21,10 +21,7 @@
     },
     "cdProductionWebApp": {
       "type": "object"
-    },
-    "cdFailoverWebApp": {
-      "type": "object"
-    }    
+    } 
   },
 
   "variables": {},
@@ -67,23 +64,10 @@
                           "priority": 1,
                           "endpointLocation": "[parameters('cdProductionWebApp').location]"
                       }
-                  },
-                  {
-                      "name": "Failover",
-                      "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints",
-                      "properties": {
-                          "endpointStatus": "Enabled",
-                          "targetResourceId": "[parameters('cdFailoverWebApp').appResourceId]",
-                          "target": "[parameters('cdFailoverWebApp').url]",
-                          "weight": 1,
-                          "priority": 2,
-                          "endpointLocation": "[parameters('cdFailoverWebApp').location]"
-                      }
                   }
           ]
       }
     },
-
 
     /* CD Production Web App Autoscaling */
     {
@@ -203,127 +187,7 @@
         "targetResourceLocation": "[parameters('cdProductionWebApp').location]",
         "notifications": []
       }
-    },
-
-    /* CD Failover Web App Autoscaling */
-    {
-      "type": "Microsoft.Insights/autoscaleSettings",
-      "name": "[concat(parameters('cdHostingplanAutoscaleName'), '-failover')]",
-      "apiVersion": "2014-04-01",
-      "location": "[parameters('cdFailoverWebApp').location]",
-      "tags": {},
-      "scale": null,
-      "properties": {
-        "profiles": [
-          {
-            "name": "Scale CD Service by CPU Metric",
-            "capacity": {
-              "minimum": "1",
-              "maximum": "10",
-              "default": "1"
-            },
-            "rules": [
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdFailoverWebApp').planResourceId]",
-                  "metricResourceLocation": "[parameters('cdFailoverWebApp').location]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT10M",
-                  "timeAggregation": "Average",
-                  "operator": "GreaterThan",
-                  "threshold": 70
-                },
-                "scaleAction": {
-                  "direction": "Increase",
-                  "type": "ChangeCount",
-                  "value": "1",
-                  "cooldown": "PT5M"
-                }
-              },
-              {
-                "metricTrigger": {
-                  "metricName": "CpuPercentage",
-                  "metricNamespace": "",
-                  "metricResourceUri": "[parameters('cdFailoverWebApp').planResourceId]",
-                  "metricResourceLocation": "[parameters('cdFailoverWebApp').location]",
-                  "timeGrain": "PT1M",
-                  "statistic": "Average",
-                  "timeWindow": "PT10M",
-                  "timeAggregation": "Average",
-                  "operator": "LessThan",
-                  "threshold": 50
-                },
-                "scaleAction": {
-                  "direction": "Decrease",
-                  "type": "ChangeCount",
-                  "value": "1",
-                  "cooldown": "PT5M"
-                }
-              }
-            ],
-            "recurrence": {
-              "frequency": "Week",
-              "schedule": {
-                "timeZone": "UTC",
-                "days": [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday"
-                ],
-                "hours": [
-                  0
-                ],
-                "minutes": [
-                  0
-                ]
-              }
-            }
-          },
-          {
-            "name": "{\"name\":\"Default\",\"for\":\"Scale CD Service by CPU Metric\"}",
-            "capacity": {
-              "minimum": "1",
-              "maximum": "1",
-              "default": "1"
-            },
-            "rules": [],
-            "recurrence": {
-              "frequency": "Week",
-              "schedule": {
-                "timeZone": "UTC",
-                "days": [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday"
-                ],
-                "hours": [
-                  23
-                ],
-                "minutes": [
-                  59
-                ]
-              }
-            }
-          }
-        ],
-        "enabled": true,
-        "name": "[concat(parameters('cdHostingplanAutoscaleName'), '-failover')]",
-        "targetResourceUri": "[parameters('cdFailoverWebApp').planResourceId]",
-        "targetResourceLocation": "[parameters('cdFailoverWebApp').location]",
-        "notifications": []
-      }
-    }
+    }  
 
   ]
 
