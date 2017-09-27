@@ -3,8 +3,7 @@ Param(
     [string] $ResourceGroupLocation = "West Europe",
     [string] $TemplateFile = ".\azuredeploy.json",
     [string] [Parameter(Mandatory=$true)] $KeyVaultName,
-    [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName,
-    [string] [Parameter(Mandatory=$true)] $FailoverResourceGroupName,
+    [string] [Parameter(Mandatory=$true)] $KeyVaultResourceGroupName,    
     [switch] $Delay,
     [int] $DelaySeconds = 60
 )
@@ -33,7 +32,6 @@ $parameters = New-Object -TypeName Hashtable;
 $parameters.Add("licenseXml", $licenseFileContent);
 $parameters.Add("keyVaultName", $KeyVaultName);
 $parameters.Add("keyVaultResourceGroupName", $KeyVaultResourceGroupName);
-$parameters.Add("failoverResourceGroupName", $FailoverResourceGroupName);
 
 ## Optionally delay the ARM provisioning to allow previous actions to spin up
 if ($Delay) {
